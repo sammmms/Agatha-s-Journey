@@ -409,11 +409,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4716753219077691454}
   - component: {fileID: 5444423453175649170}
-  - component: {fileID: 6528279143439883658}
-  - component: {fileID: 5788212583705711973}
   - component: {fileID: 7667539319961562537}
-  - component: {fileID: 3388374592967669003}
-  - component: {fileID: 5176479467220362601}
+  - component: {fileID: 6594186550331614681}
+  - component: {fileID: 7082453602897072883}
+  - component: {fileID: 4869109742080293445}
+  - component: {fileID: 7530613644785500383}
+  - component: {fileID: 5876963376323180459}
+  - component: {fileID: 2702466235109837075}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Untagged
@@ -462,39 +464,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6528279143439883658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1073584302107045668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1118fd9c06bff1a42a15c878af89bb42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5788212583705711973
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1073584302107045668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c79b1532e972dcf4fa8e9b030160726d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _characterController: {fileID: 7667539319961562537}
-  _playerCamera: {fileID: 0}
-  runAcceleration: 35
-  runSpeed: 4
-  drag: 20
-  movingThreshold: 0.01
-  lookSenseH: 0.1
-  lookSenseV: 0.1
-  lookLimitV: 89
 --- !u!143 &7667539319961562537
 CharacterController:
   m_ObjectHideFlags: 0
@@ -520,7 +489,40 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.00001
   m_Center: {x: 0, y: 0.88, z: 0}
---- !u!114 &3388374592967669003
+--- !u!114 &6594186550331614681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073584302107045668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1118fd9c06bff1a42a15c878af89bb42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7082453602897072883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073584302107045668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c79b1532e972dcf4fa8e9b030160726d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterController: {fileID: 7667539319961562537}
+  _playerCamera: {fileID: 0}
+  runAcceleration: 35
+  runSpeed: 4
+  drag: 20
+  movingThreshold: 0.01
+  lookSenseH: 0.1
+  lookSenseV: 0.1
+  lookLimitV: 89
+--- !u!114 &4869109742080293445
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -533,7 +535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <CurrentPlayerMovementState>k__BackingField: 0
---- !u!114 &5176479467220362601
+--- !u!114 &7530613644785500383
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -546,7 +548,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 5444423453175649170}
-  locomotionAnimationBlendSpeed: 6
+  locomotionAnimationBlendSpeed: 4
+--- !u!114 &5876963376323180459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073584302107045668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6c2822b946f2fc8f91adffb27923687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2702466235109837075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073584302107045668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aacb975975ca4c17c8205b342377e08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectableSpell: 
+  spells: 
+  lightweightAura: {fileID: 4789906498350302503, guid: 5034e96c5b6e7744bb55856aa832a2dd, type: 3}
+  barrierAura: {fileID: 6735300810260480193, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
+  enhanceAura: {fileID: 950369842493697681, guid: 2f6ec1a16dc85a24c977f33ca8e4763b, type: 3}
+  healAura: {fileID: 3328282442038601198, guid: 82032d6fcabb6c04fbf5937f2e145585, type: 3}
+  bolt: {fileID: 5182280641448971461, guid: 7dacc3bbcaf4ee241b6c8ab53e89a38b, type: 3}
+  flare: {fileID: 7759180355065354278, guid: d65fabf7ce437aaedb53dc82a5681ac0, type: 3}
+  arrow: {fileID: 0}
+  spellSpeed: 10
 --- !u!1 &1275243159685832719
 GameObject:
   m_ObjectHideFlags: 0

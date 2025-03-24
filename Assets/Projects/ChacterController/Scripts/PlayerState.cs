@@ -21,4 +21,5 @@ public enum PlayerMovementState
     Falling = 5,
     Strafing = 6,
     Stunned = 7,
+    Aiming = 8,
 }

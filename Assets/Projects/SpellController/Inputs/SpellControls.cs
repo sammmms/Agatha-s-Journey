@@ -72,7 +72,7 @@ using UnityEngine.InputSystem.Utilities;
 /// }
 /// </code>
 /// </example>
-public partial class @UserInputs: IInputActionCollection2, IDisposable
+public partial class @SpellControls: IInputActionCollection2, IDisposable
 {
     /// <summary>
     /// Provides access to the underlying asset instance.
@@ -82,7 +82,7 @@ public partial class @UserInputs: IInputActionCollection2, IDisposable
     /// <summary>
     /// Constructs a new instance.
     /// </summary>
-    public @UserInputs()
+    public @SpellControls()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""SpellControls"",
@@ -188,9 +188,9 @@ public partial class @UserInputs: IInputActionCollection2, IDisposable
         m_ItemInputs_ShootInputs = m_ItemInputs.FindAction("ShootInputs", throwIfNotFound: true);
     }
 
-    ~@UserInputs()
+    ~@SpellControls()
     {
-        UnityEngine.Debug.Assert(!m_ItemInputs.enabled, "This will cause a leak and performance issues, UserInputs.ItemInputs.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_ItemInputs.enabled, "This will cause a leak and performance issues, SpellControls.ItemInputs.Disable() has not been called.");
     }
 
     /// <summary>
@@ -273,12 +273,12 @@ public partial class @UserInputs: IInputActionCollection2, IDisposable
     /// </summary>
     public struct ItemInputsActions
     {
-        private @UserInputs m_Wrapper;
+        private @SpellControls m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public ItemInputsActions(@UserInputs wrapper) { m_Wrapper = wrapper; }
+        public ItemInputsActions(@SpellControls wrapper) { m_Wrapper = wrapper; }
         /// <summary>
         /// Provides access to the underlying input action "ItemInputs/ToggleInputs".
         /// </summary>

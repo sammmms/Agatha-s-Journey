@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerAnimation : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
-    [SerializeField] private float locomotionAnimationBlendSpeed = 0.02f;
+    [SerializeField] private float locomotionAnimationBlendSpeed = 4f;
 
     private PlayerLocomotionInput _playerLocomotionInput;
 
