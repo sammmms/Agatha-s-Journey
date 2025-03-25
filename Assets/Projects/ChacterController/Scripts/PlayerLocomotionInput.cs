@@ -4,10 +4,8 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(-2)]
 public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomotionMapActions
 {
-
-
-
-    public PlayerControls PlayerControls {  get; private set; }
+    public bool SprintToggled = false;
+    public PlayerControls PlayerControls { get; private set; }
     public Vector2 MovementInput { get; private set; }
 
     public Vector2 LookInput { get; private set; }
@@ -19,7 +17,6 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
 
         PlayerControls.PlayerLocomotionMap.Enable();
         PlayerControls.PlayerLocomotionMap.SetCallbacks(this);
-
     }
 
     private void OnDisable()
@@ -36,5 +33,17 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
     public void OnLook(InputAction.CallbackContext context)
     {
         LookInput = context.ReadValue<Vector2>();
+    }
+
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            SprintToggled = true;
+        }
+        else
+        {
+            SprintToggled = false;
+        }
     }
 }

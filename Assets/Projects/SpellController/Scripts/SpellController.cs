@@ -65,8 +65,8 @@ public class SpellController : MonoBehaviour
 
         selectableSpell.Add(Spell.Lightweight);
         selectableSpell.Add(Spell.Barrier);
-        selectableSpell.Add(Spell.Bolt);
-        selectableSpell.Add(Spell.Flare);
+        selectableSpell.Add(Spell.Enhance);
+        selectableSpell.Add(Spell.Heal);
     }
 
     private void Update()
