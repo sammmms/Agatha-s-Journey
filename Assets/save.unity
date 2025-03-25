@@ -576,6 +576,14 @@ PrefabInstance:
       propertyPath: Orbits.Top.Height
       value: 3.4
       objectReference: {fileID: 0}
+    - target: {fileID: 8668167973772255016, guid: 1ccddba5c07fa3def829c8cdc596a4cd, type: 3}
+      propertyPath: TrackerSettings.PositionDamping.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8668167973772255016, guid: 1ccddba5c07fa3def829c8cdc596a4cd, type: 3}
+      propertyPath: TrackerSettings.PositionDamping.y
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -631,6 +639,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4716753219077691454, guid: aa2f6721e82a5d340b3fe9eccf05368c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6594186550331614681, guid: aa2f6721e82a5d340b3fe9eccf05368c, type: 3}
+      propertyPath: SprintToggled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7082453602897072883, guid: aa2f6721e82a5d340b3fe9eccf05368c, type: 3}
