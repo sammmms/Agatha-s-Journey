@@ -1,2 +1,33 @@
 fileFormatVersion: 2
 guid: aacb975975ca4c17c8205b342377e08c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - lightweightAura: {fileID: 287056432625514407, guid: 3fa97b81d6a44bc4982eb3d91f179aad, type: 3}
+  - barrierAura: {fileID: 6735300810260480193, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
+  - enhanceAura: {fileID: 950369842493697681, guid: 2f6ec1a16dc85a24c977f33ca8e4763b, type: 3}
+  - healAura: {fileID: 3328282442038601198, guid: 82032d6fcabb6c04fbf5937f2e145585, type: 3}
+  - bolt: {fileID: 5182280641448971461, guid: 7dacc3bbcaf4ee241b6c8ab53e89a38b, type: 3}
+  - flare: {fileID: 7759180355065354278, guid: d65fabf7ce437aaedb53dc82a5681ac0, type: 3}
+  - arrow: {fileID: 4534381701493877084, guid: e2719c0a26b65174c95629db92cb96bc, type: 3}
+  - gravityManipulation: {instanceID: 0}
+  - manaConstruct: {instanceID: 0}
+  - highJump: {fileID: 936504878234001782, guid: c54da4063023fdd439f2d8d3ea582bd3, type: 3}
+  - shockwaveBarrier: {fileID: 7953013907061969366, guid: 9e150c69d996c2644a2499ecc2cbebfd, type: 3}
+  - piercingShot: {instanceID: 0}
+  - reinforcedBarrier: {fileID: 7236769584116962146, guid: b2a16c07871ccd441a9db25beeccfef4, type: 3}
+  - blazingSurge: {instanceID: 0}
+  - explosiveShot: {instanceID: 0}
+  - amplifiedRecovery: {fileID: 470367661892998335, guid: 970b72619af35bf47b53cb2343db2c07, type: 3}
+  - holyShot: {instanceID: 0}
+  - firestormVolley: {instanceID: 0}
+  - hoverStep: {instanceID: 0}
+  - floatingPlatform: {instanceID: 0}
+  - sturdyShield: {instanceID: 0}
+  - fortifiedFloatingPlatform: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
