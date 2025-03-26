@@ -418,7 +418,7 @@ GameObject:
   - component: {fileID: 2702466235109837075}
   m_Layer: 0
   m_Name: ThirdPersonController
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -486,9 +486,9 @@ CharacterController:
   m_Radius: 0.27
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.00001
-  m_Center: {x: 0, y: 0.88, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &6594186550331614681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,6 +501,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1118fd9c06bff1a42a15c878af89bb42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SprintToggled: 0
+  JumpPressed: 0
 --- !u!114 &7082453602897072883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -517,8 +519,12 @@ MonoBehaviour:
   _playerCamera: {fileID: 0}
   runAcceleration: 35
   runSpeed: 4
+  sprintAcceleration: 50
+  sprintSpeed: 8
   drag: 20
   movingThreshold: 0.01
+  gravity: 25
+  jumpSpeed: 1
   lookSenseH: 0.1
   lookSenseV: 0.1
   lookLimitV: 89
@@ -573,15 +579,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aacb975975ca4c17c8205b342377e08c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectableSpell: 
+  selectableSpell: 01000000020000000300000004000000
   spells: 
-  lightweightAura: {fileID: 4789906498350302503, guid: 5034e96c5b6e7744bb55856aa832a2dd, type: 3}
+  lightweightAura: {fileID: 287056432625514407, guid: 3fa97b81d6a44bc4982eb3d91f179aad, type: 3}
   barrierAura: {fileID: 6735300810260480193, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
   enhanceAura: {fileID: 950369842493697681, guid: 2f6ec1a16dc85a24c977f33ca8e4763b, type: 3}
   healAura: {fileID: 3328282442038601198, guid: 82032d6fcabb6c04fbf5937f2e145585, type: 3}
   bolt: {fileID: 5182280641448971461, guid: 7dacc3bbcaf4ee241b6c8ab53e89a38b, type: 3}
   flare: {fileID: 7759180355065354278, guid: d65fabf7ce437aaedb53dc82a5681ac0, type: 3}
-  arrow: {fileID: 0}
+  arrow: {fileID: 4534381701493877084, guid: e2719c0a26b65174c95629db92cb96bc, type: 3}
+  gravityManipulation: {fileID: 0}
+  manaConstruct: {fileID: 0}
+  highJump: {fileID: 936504878234001782, guid: c54da4063023fdd439f2d8d3ea582bd3, type: 3}
+  shockwaveBarrier: {fileID: 7953013907061969366, guid: 9e150c69d996c2644a2499ecc2cbebfd, type: 3}
+  piercingShot: {fileID: 0}
+  reinforcedBarrier: {fileID: 7236769584116962146, guid: b2a16c07871ccd441a9db25beeccfef4, type: 3}
+  blazingSurge: {fileID: 0}
+  explosiveShot: {fileID: 0}
+  amplifiedRecovery: {fileID: 470367661892998335, guid: 970b72619af35bf47b53cb2343db2c07, type: 3}
+  holyShot: {fileID: 0}
+  firestormVolley: {fileID: 0}
+  hoverStep: {fileID: 0}
+  floatingPlatform: {fileID: 0}
+  sturdyShield: {fileID: 0}
+  fortifiedFloatingPlatform: {fileID: 0}
   spellSpeed: 10
 --- !u!1 &1275243159685832719
 GameObject:

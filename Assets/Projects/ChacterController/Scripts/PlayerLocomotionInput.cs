@@ -5,9 +5,10 @@ using UnityEngine.InputSystem;
 public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomotionMapActions
 {
     public bool SprintToggled = false;
+
+    public bool JumpPressed = false;
     public PlayerControls PlayerControls { get; private set; }
     public Vector2 MovementInput { get; private set; }
-
     public Vector2 LookInput { get; private set; }
 
     private void OnEnable()
@@ -23,6 +24,11 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
     {
         PlayerControls.PlayerLocomotionMap.Disable();
         PlayerControls.PlayerLocomotionMap.RemoveCallbacks(this);
+    }
+
+    private void LateUpdate()
+    {
+        JumpPressed = false;
     }
 
     public void OnMovement(InputAction.CallbackContext context)
@@ -45,5 +51,13 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
         {
             SprintToggled = false;
         }
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+
+        JumpPressed = true;
     }
 }

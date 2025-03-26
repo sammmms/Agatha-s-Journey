@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public float sprintSpeed = 8f;
     public float drag = 20f;
     public float movingThreshold = 0.01f;
+    public float gravity = 25f;
+    public float jumpSpeed = 1.0f;
 
     [Header("Camera")]
     [SerializeField]
@@ -35,6 +38,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 _cameraRotation = Vector2.zero;
     private Vector2 _playerTargetRotation = Vector2.zero;
 
+    private float _verticalVelocity = 0f;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -50,6 +55,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         UpdateMovementState();
+        HandleVerticalMovement();
         HandleLateralMovement();
     }
 
@@ -58,6 +64,7 @@ public class PlayerController : MonoBehaviour
         bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
         bool isMovingLaterally = IsMovingLaterally();
         bool isSprinting = _playerLocomotionInput.SprintToggled && isMovingLaterally;
+        bool isGrounded = IsGrounded();
 
         PlayerMovementState lateralState =
             isSprinting ? PlayerMovementState.Sprinting
@@ -65,11 +72,38 @@ public class PlayerController : MonoBehaviour
             : PlayerMovementState.Idling;
 
         _playerState.SetPlayerMovementState(lateralState);
+
+        if (!isGrounded && _characterController.velocity.y > 0)
+        {
+            _playerState.SetPlayerMovementState(PlayerMovementState.Jumping);
+        }
+        else if (!isGrounded && _characterController.velocity.y <= 0)
+        {
+            _playerState.SetPlayerMovementState(PlayerMovementState.Falling);
+        }
+    }
+
+    private void HandleVerticalMovement()
+    {
+        bool isGrounded = _playerState.InGroundedState();
+
+        if (isGrounded && _verticalVelocity < 0)
+        {
+            _verticalVelocity = 0f;
+        }
+
+        _verticalVelocity -= gravity * Time.deltaTime;
+
+        if (isGrounded && _playerLocomotionInput.JumpPressed)
+        {
+            _verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+        }
     }
 
     private void HandleLateralMovement()
     {
         bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+        bool isGrounded = _playerState.InGroundedState();
 
         float currentAcceleration = isSprinting ? sprintAcceleration : runAcceleration;
         float currentSpeed = isSprinting ? sprintSpeed : runSpeed;
@@ -105,6 +139,7 @@ public class PlayerController : MonoBehaviour
         }
 
         newVelocity = Vector3.ClampMagnitude(newVelocity, currentSpeed);
+        newVelocity.y = _verticalVelocity;
 
         _characterController.Move(newVelocity * Time.deltaTime);
     }
@@ -137,5 +172,10 @@ public class PlayerController : MonoBehaviour
             _characterController.velocity.y
         );
         return lateralVelocity.magnitude > movingThreshold;
+    }
+
+    private bool IsGrounded()
+    {
+        return _characterController.isGrounded;
     }
 }
