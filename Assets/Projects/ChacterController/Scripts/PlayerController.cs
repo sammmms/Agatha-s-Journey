@@ -8,19 +8,16 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     [SerializeField]
     private CharacterController _characterController;
+    private PlayerStatus _playerStatusController;
 
     [SerializeField]
     private Camera _playerCamera;
 
     [Header("Player Controls")]
     public float runAcceleration = 35f;
-    public float runSpeed = 4f;
     public float sprintAcceleration = 50f;
-    public float sprintSpeed = 8f;
     public float drag = 20f;
     public float movingThreshold = 0.01f;
-    public float gravity = 25f;
-    public float jumpSpeed = 1.0f;
 
     [Header("Camera")]
     [SerializeField]
@@ -40,6 +37,30 @@ public class PlayerController : MonoBehaviour
 
     private float _verticalVelocity = 0f;
 
+    private float RunSpeed
+    {
+        get { return _playerStatusController.runSpeed; }
+        set { _playerStatusController.runSpeed = value; }
+    }
+
+    private float SprintSpeed
+    {
+        get { return _playerStatusController.sprintSpeed; }
+        set { _playerStatusController.sprintSpeed = value; }
+    }
+
+    private float JumpSpeed
+    {
+        get { return _playerStatusController.jumpSpeed; }
+        set { _playerStatusController.jumpSpeed = value; }
+    }
+
+    private float Gravity
+    {
+        get { return _playerStatusController.gravity; }
+        set { _playerStatusController.gravity = value; }
+    }
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -50,6 +71,7 @@ public class PlayerController : MonoBehaviour
     {
         _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
         _playerState = GetComponent<PlayerState>();
+        _playerStatusController = GetComponent<PlayerStatus>();
     }
 
     private void Update()
@@ -82,7 +104,8 @@ public class PlayerController : MonoBehaviour
             _playerState.SetPlayerMovementState(PlayerMovementState.Falling);
         }
     }
-
+    private Vector3 _horizontalVelocity;
+    private bool _wasSprintingWhenJumped;
     private void HandleVerticalMovement()
     {
         bool isGrounded = _playerState.InGroundedState();
@@ -92,12 +115,25 @@ public class PlayerController : MonoBehaviour
             _verticalVelocity = 0f;
         }
 
-        _verticalVelocity -= gravity * Time.deltaTime;
+        _verticalVelocity -= Gravity * Time.deltaTime;
 
         if (isGrounded && _playerLocomotionInput.JumpPressed)
         {
-            _verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+
+            _wasSprintingWhenJumped = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+
+            _verticalVelocity += Mathf.Sqrt(JumpSpeed * 3 * Gravity);
+
+
         }
+
+
+        _horizontalVelocity = new Vector3(
+        _characterController.velocity.x,
+        0,
+        _characterController.velocity.z
+    );
+
     }
 
     private void HandleLateralMovement()
@@ -105,8 +141,11 @@ public class PlayerController : MonoBehaviour
         bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
         bool isGrounded = _playerState.InGroundedState();
 
-        float currentAcceleration = isSprinting ? sprintAcceleration : runAcceleration;
-        float currentSpeed = isSprinting ? sprintSpeed : runSpeed;
+        float currentAcceleration =
+        isGrounded ?
+        (isSprinting ? sprintAcceleration : runAcceleration) : runAcceleration * 0.3f;
+        float currentSpeed =
+        isSprinting ? SprintSpeed : RunSpeed;
 
         Vector3 cameraForwardXZ = new Vector3(
             _playerCamera.transform.forward.x,
@@ -121,49 +160,87 @@ public class PlayerController : MonoBehaviour
         ).normalized;
 
         Vector3 movementDirection =
-            cameraRightXZ * _playerLocomotionInput.MovementInput.x
-            + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
+            cameraRightXZ * _playerLocomotionInput.MovementInput.x +
+            cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
 
-        Vector3 movementDelta = movementDirection * currentAcceleration * Time.deltaTime;
-        Vector3 newVelocity = _characterController.velocity + movementDelta;
-
-        Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
-
-        if (newVelocity.magnitude > drag * Time.deltaTime)
+        if (isSprinting)
         {
-            newVelocity = newVelocity - currentDrag;
+            bool isMovingBackward = _playerLocomotionInput.MovementInput.y < 0;
+            if (isMovingBackward)
+            {
+                currentAcceleration = runAcceleration;
+                currentSpeed = RunSpeed;
+                _playerState.SetPlayerMovementState(PlayerMovementState.Running);
+            }
+        }
+
+        if (isGrounded)
+        {
+            Vector3 movementDelta = currentAcceleration * Time.deltaTime * movementDirection;
+            _horizontalVelocity += movementDelta;
+
+            Vector3 currentDrag = _horizontalVelocity.normalized * drag * Time.deltaTime;
+
+            // Apply drag only when grounded
+            if (_horizontalVelocity.magnitude > drag * Time.deltaTime)
+            {
+                _horizontalVelocity -= currentDrag;
+            }
+            else
+            {
+                _horizontalVelocity = Vector3.zero;
+            }
+        }
+
+
+        Vector3 finalVelocity;
+        if (!isGrounded && _wasSprintingWhenJumped)
+        {
+            if (_horizontalVelocity.magnitude < SprintSpeed)
+            {
+                _horizontalVelocity = _horizontalVelocity.normalized * SprintSpeed;
+            }
+
+            finalVelocity = Vector3.ClampMagnitude(_horizontalVelocity, SprintSpeed);
         }
         else
         {
-            newVelocity = Vector3.zero;
+            finalVelocity = Vector3.ClampMagnitude(_horizontalVelocity, currentSpeed);
         }
 
-        newVelocity = Vector3.ClampMagnitude(newVelocity, currentSpeed);
-        newVelocity.y = _verticalVelocity;
+        finalVelocity.y = _verticalVelocity;
 
-        _characterController.Move(newVelocity * Time.deltaTime);
+        _characterController.Move(finalVelocity * Time.deltaTime);
     }
 
     private void LateUpdate()
     {
-        _cameraRotation.x += lookSenseH * _playerLocomotionInput.LookInput.x;
+        // Get smoothed look input (optional)
+        Vector2 lookInput = new Vector2(
+            _playerLocomotionInput.LookInput.x * lookSenseH,
+            _playerLocomotionInput.LookInput.y * lookSenseV
+        );
+
+        // Horizontal rotation (Y-axis)
+        _cameraRotation.x += lookInput.x;
+
+        // Vertical rotation (X-axis) with clamping
         _cameraRotation.y = Mathf.Clamp(
-            _cameraRotation.y - lookSenseV * _playerLocomotionInput.LookInput.y,
+            _cameraRotation.y - lookInput.y,
             -lookLimitV,
             lookLimitV
         );
 
-        _playerTargetRotation.x +=
-            transform.eulerAngles.x + lookSenseH * _playerLocomotionInput.LookInput.x;
-        transform.rotation = Quaternion.Euler(0f, _playerTargetRotation.x, 0f);
+        // Apply rotations using Quaternions to avoid gimbal lock
+        Quaternion targetHorizontalRot = Quaternion.Euler(0f, _cameraRotation.x, 0f);
+        Quaternion targetVerticalRot = Quaternion.Euler(_cameraRotation.y, 0f, 0f);
 
-        _playerCamera.transform.rotation = Quaternion.Euler(
-            _cameraRotation.y,
-            _cameraRotation.x,
-            0
-        );
+        // Player rotates only horizontally (Y-axis)
+        transform.rotation = targetHorizontalRot;
+
+        // Camera rotates vertically (X-axis) relative to player
+        _playerCamera.transform.localRotation = targetVerticalRot;
     }
-
     private bool IsMovingLaterally()
     {
         Vector3 lateralVelocity = new Vector3(

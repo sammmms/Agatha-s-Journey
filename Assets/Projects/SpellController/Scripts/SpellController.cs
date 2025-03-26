@@ -1,95 +1,70 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Windows;
 
-public enum Spell
-{
-    Lightweight = 1,
-    Barrier = 2,
-    Enhance = 3,
-    Heal = 4,
-    Bolt = 5,
-    Flare = 6,
-    Arrow = 7,
 
-    // Upgraded spells
-    GravityManipulation = 8, // Lightweight (Upgraded)
-    ManaConstruct = 9, // Barrier (Upgraded)
-
-    // Enhanced spells
-    HighJump = 10, // Lightweight + Enhance
-    ShockwaveBarrier = 11, // Barrier + Bolt
-    PiercingShot = 12, // Arrow + Enhance
-    ReinforcedBarrier = 13, // Barrier + Enhance
-    BlazingSurge = 14, // Flare + Bolt
-    ExplosiveShot = 15, // Arrow + Flare
-    AmplifiedRecovery = 16, // Heal + Enhance
-    HolyShot = 17, // Heal + Arrow
-
-    // Conjurable Three-Spell Combinations
-    FirestormVolley = 18, // Arrow + Flare + Bolt
-    HoverStep = 19, // Lightweight (Upgraded) + Enhance
-    FloatingPlatform = 20, // Lightweight (Upgraded) + Barrier (Upgraded)
-    SturdyShield = 21, // Barrier (Upgraded) + Enhance
-    FortifiedFloatingPlatform = 22, // Lightweight (Upgraded) + Barrier (Upgraded) + Enhance
-
-    // Unconjurable Two-Spell Combinations & Negative Effects
-    OverchargedBody = 23, // Lightweight (Upgraded) + Bolt (Stun for [certain seconds] if trying to cast [LeftClick])
-    ManaBurn = 24, // Barrier (Upgraded) + Flare (Take [certain damage and mana] if trying to cast)
-    PainSurge = 25, // Heal + Bolt (Stun for [certain seconds] if trying to cast [LeftClick])
-    CorruptRegeneration = 26, // Heal + Flare (Take [certain mana] if trying to cast [LeftClick])
-    ArrowRebound = 27, // Arrow + Barrier (Take [certain damage] if trying to cast [LeftClick])
-
-    // Unconjurable Three-Spell Combinations & Negative Effects
-    OverchargedHeart = 28, // Lightweight (Upgraded) + Heal + Bolt (Stun for [more seconds] if trying to cast [LeftClick])
-    ManaOverload = 29 // Heal + Barrier (Upgraded) + Bolt (Take [more damage and mana] and stun [for brief seconds] if trying to cast)   
-}
 
 public class SpellController : MonoBehaviour
 {
-    public List<Spell> selectableSpell = new List<Spell>();
+    [SerializeField] private SpellDatabase _spellDatabase;
+    /// <summary>
+    ///    List of spells that can be selected by the player
+    ///    - This is the list of spells that the player can select from the hotbar
+    ///    - This spell can be re-arranged by the player
+    /// </summary>
+    public List<Spell> selectableSpell = new List<Spell>(4);
 
-    public List<Spell> spells = new List<Spell>();
+    /// <summary>
+    ///   List of spells that are currently active
+    /// </summary>
+    public List<Spell> spells = new List<Spell>(3);
 
-    public Dictionary<Spell, GameObject> activeAura = new Dictionary<Spell, GameObject>();
+    /// <summary>
+    /// List of active auras
+    /// </summary>
+    private Dictionary<Spell, GameObject> activeAura = new();
+    private Dictionary<Spell, GameObject> shootableProjectiles = new();
 
-    [Header("Basic Spells")]
-    [SerializeField] private GameObject lightweightAura;
-    [SerializeField] private GameObject barrierAura;
-    [SerializeField] private GameObject enhanceAura;
-    [SerializeField] private GameObject healAura;
-    [SerializeField] private GameObject bolt;
-    [SerializeField] private GameObject flare;
-    [SerializeField] private GameObject arrow;
+    private static readonly Dictionary<Spell, Spell> twoSpellCombos = new()
+    {
+        {Spell.Barrier | Spell.Bolt, Spell.ShockingBarrier},
+        {Spell.Barrier | Spell.Enhance, Spell.ReinforcedBarrier},
+        {Spell.Enhance | Spell.Heal, Spell.AmplifiedRecovery},
+        {Spell.Enhance | Spell.Lightweight, Spell.HighJump},
+        {Spell.Flare | Spell.Bolt, Spell.BlazingSurge},
+        {Spell.Arrow | Spell.Bolt, Spell.LightningBolt},
+        {Spell.Arrow | Spell.Enhance, Spell.PiercingShot},
+        {Spell.Arrow | Spell.Flare, Spell.ExplosiveShot},
+        {Spell.Heal | Spell.Arrow, Spell.HolyShot},
+    };
 
-    [Header("Upgraded Spells")]
-    [SerializeField] private GameObject gravityManipulation;
-    [SerializeField] private GameObject manaConstruct;
+    private static readonly HashSet<Spell> auraSpell = new()
+    {
+        Spell.Barrier,
+        Spell.ReinforcedBarrier,
+        Spell.ShockingBarrier,
+        Spell.ShockwaveBarrier,
+        Spell.Heal,
+        Spell.AmplifiedRecovery,
+        Spell.Lightweight,
+        Spell.HighJump,
+        Spell.Enhance,
+    };
 
-    [Header("Enhanced Spells")]
-    [SerializeField] private GameObject highJump;
-    [SerializeField] private GameObject shockwaveBarrier;
-    [SerializeField] private GameObject piercingShot;
-    [SerializeField] private GameObject reinforcedBarrier;
-    [SerializeField] private GameObject blazingSurge;
-    [SerializeField] private GameObject explosiveShot;
-    [SerializeField] private GameObject amplifiedRecovery;
-    [SerializeField] private GameObject holyShot;
-
-    [Header("Conjurable Three-Spell Combinations")]
-    [SerializeField] private GameObject firestormVolley;
-    [SerializeField] private GameObject hoverStep;
-    [SerializeField] private GameObject floatingPlatform;
-    [SerializeField] private GameObject sturdyShield;
-    [SerializeField] private GameObject fortifiedFloatingPlatform;
+    private static readonly Dictionary<Spell, Spell> threeSpellCombos = new()
+    {
+        {Spell.Barrier | Spell.Bolt | Spell.Enhance, Spell.ShockwaveBarrier},
+        {Spell.Arrow | Spell.Flare | Spell.Bolt, Spell.FirestormVolley},
+        {Spell.Heal | Spell.Enhance | Spell.Arrow, Spell.PurifyingBlizzard},
+        {Spell.Heal | Spell.Enhance | Spell.Flare, Spell.SurgeOfBlessing},
+    };
 
     private SpellLocomotionInput _spellLocomotionInput;
-
     private PlayerState _playerState;
-
     private Camera _playerCamera;
 
     [SerializeField] private float spellSpeed = 10f;
@@ -105,7 +80,7 @@ public class SpellController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if(_spellLocomotionInput != null)
+        if (_spellLocomotionInput != null)
         {
             _spellLocomotionInput.OnSpellSelected -= HandleHotbarInput;
         }
@@ -124,76 +99,120 @@ public class SpellController : MonoBehaviour
 
     private void HandleHotbarInput(int index)
     {
-        Spell spell = selectableSpell[index-1];
+        Spell spell = selectableSpell[index - 1];
 
         ToggleHotbarItem(spell);
 
-        HandleCombinedAura();
+        List<Spell> spellToActivate = HandleCombinationSpell();
+
+        print($"spell to remove : {spellToActivate}");
+
+        List<Spell> spellToRemove = new List<Spell>();
+        foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
+        {
+            if (!spellToActivate.Contains(kvp.Key))
+            {
+                spellToRemove.Add(kvp.Key);
+                print($"spellToRemove: {kvp.Key}");
+            }
+        }
+
+        foreach (Spell spellToRemoveKey in spellToRemove)
+        {
+            Destroy(activeAura[spellToRemoveKey]);
+            activeAura.Remove(spellToRemoveKey);
+        }
+
+        foreach (Spell _spell in spellToActivate)
+        {
+            print($"spellToActivate: {_spell}");
+            SetSpellAsActive(_spell);
+        }
     }
 
-    private void HandleCombinedAura()
+    private List<Spell> HandleCombinationSpell()
     {
-        List<Spell> auraSpells = new List<Spell>(spells);
-        foreach (Spell spell in spells) {
-            bool isCombined = false;
-            foreach (Spell anotherSpell in spells) 
-            { 
-                if(spell != anotherSpell)
-                {
-                    if (spell == Spell.Lightweight && anotherSpell == Spell.Enhance)
-                    {
-                        auraSpells.Add(Spell.HighJump);
-                        isCombined = true;
-                    }
-                    if (spell == Spell.Barrier && anotherSpell == Spell.Bolt)
-                    {
-                        auraSpells.Add(Spell.ShockwaveBarrier);
-                        isCombined = true;
-                    }
-                    if (spell == Spell.Barrier && anotherSpell == Spell.Enhance)
-                    {
-                        auraSpells.Add(Spell.ReinforcedBarrier);
-                        isCombined = true;
-                    }
-                    if (spell == Spell.Heal && anotherSpell == Spell.Enhance)
-                    {
-                        auraSpells.Add(Spell.AmplifiedRecovery);
-                        isCombined = true;
-                    }
+        List<Spell> newActiveSpell = new();
 
-                    if (isCombined)
-                    {
-                        auraSpells.Remove(spell);
-                        auraSpells.Remove(anotherSpell);
-                        break;
-                    }
+        if (spells.Count == 0)
+        {
+            return newActiveSpell;
+        }
+
+        if (spells.Count == 1)
+        {
+            newActiveSpell.Add(spells[0]);
+            return newActiveSpell;
+        }
+
+
+        // Check three spell combos
+        if (spells.Count == 3)
+        {
+            Spell threeSpellCombo = (Spell)spells[0] | (Spell)spells[1] | (Spell)spells[2];
+
+            if (threeSpellCombos.ContainsKey(threeSpellCombo))
+            {
+                newActiveSpell.Add(threeSpellCombos[threeSpellCombo]);
+                return newActiveSpell;
+            }
+        }
+
+
+        List<Spell> combinedSpell = new(spells);
+        foreach (Spell spell in spells)
+        {
+            foreach (Spell combo in spells)
+            {
+                Spell twoSpellCombo = spell | combo;
+
+                if (twoSpellCombos.ContainsKey(twoSpellCombo) && !newActiveSpell.Contains(twoSpellCombos[twoSpellCombo]))
+                {
+                    newActiveSpell.Add(twoSpellCombos[twoSpellCombo]);
+                    combinedSpell.Remove(spell);
+                    combinedSpell.Remove(combo);
+                    break;
                 }
             }
-        }
 
-        List<Spell> currentActiveAura = new List<Spell>(activeAura.Keys);
-
-        foreach (Spell spell in currentActiveAura)
-        {
-            if (!auraSpells.Contains(spell))
+            if (combinedSpell.Count < 3)
             {
-                Destroy(activeAura[spell]);
-                activeAura.Remove(spell);
+                break;
             }
         }
 
-        foreach (Spell spell in auraSpells)
+        foreach (Spell spell in combinedSpell)
         {
-            if (!currentActiveAura.Contains(spell))
-            {
-                HandleAuraSpell(spell);
-            }
+            newActiveSpell.Add(spell);
         }
 
-
+        return newActiveSpell;
     }
 
-    private void ToggleHotbarItem(Spell spell) {
+    private void SetSpellAsActive(Spell spell)
+    {
+        if (activeAura.ContainsKey(spell) || shootableProjectiles.ContainsKey(spell))
+        {
+            return;
+        }
+
+        GameObject spellPrefab = GetGameObject(spell);
+        bool isAura = auraSpell.Contains(spell);
+
+        if (isAura)
+        {
+            GameObject aura = Instantiate(spellPrefab, transform.position, Quaternion.identity);
+            activeAura.Add(spell, aura);
+        }
+        else
+        {
+            shootableProjectiles.Add(spell, spellPrefab);
+        }
+    }
+
+
+    private void ToggleHotbarItem(Spell spell)
+    {
         if (spells.Contains(spell))
         {
             spells.Remove(spell);
@@ -219,49 +238,14 @@ public class SpellController : MonoBehaviour
         }
     }
 
-    private void HandleAuraSpell(Spell spell)
+    private GameObject GetGameObject(Spell spell)
     {
-        GameObject auraSpell = GetAuraObject(spell);
+        if (spell == Spell.None) return null;
 
-        if (auraSpell != null)
-        {
-           activeAura[spell] = Instantiate(auraSpell, transform.position, Quaternion.identity);
-        }
+        return _spellDatabase.GetSpellPrefab(spell);
     }
 
-    private GameObject GetAuraObject(Spell spell)
-    {
-        switch (spell)
-        {
-            case Spell.Lightweight:
-                return lightweightAura;
-            case Spell.Barrier:
-                return barrierAura;
-            case Spell.Enhance:
-                return enhanceAura;
-            case Spell.Heal:
-                return healAura;
-            default:
-                return GetEnhancedAuraObject(spell);
-        }
-    }
 
-    private GameObject GetEnhancedAuraObject(Spell spell)
-    {
-        switch (spell)
-        {
-            case Spell.HighJump:
-                return highJump;
-            case Spell.ShockwaveBarrier:
-                return shockwaveBarrier;
-            case Spell.ReinforcedBarrier:
-                return reinforcedBarrier;
-            case Spell.AmplifiedRecovery:
-                return amplifiedRecovery;
-            default:
-                return null;
-        }
-    }
 
     private void HandlePlayerClick(ShootMode shootMode)
     {
@@ -291,20 +275,9 @@ public class SpellController : MonoBehaviour
 
     private void HandlePlayerShoot()
     {
-        if(spells.Contains(Spell.Bolt))
+        foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
         {
-            GameObject boltSpell = Instantiate(bolt, transform.position, Quaternion.identity);
-            HandleLaunchSpell(boltSpell);
-        }
-        else if (spells.Contains(Spell.Flare))
-        {
-            GameObject flareSpell = Instantiate(flare, transform.position, Quaternion.identity);
-            HandleLaunchSpell(flareSpell);
-        }
-        else if (spells.Contains(Spell.Arrow))
-        {
-            GameObject arrowSpell = Instantiate(arrow, transform.position, Quaternion.identity);
-            HandleLaunchSpell(arrowSpell);
+            HandleLaunchSpell(kvp.Value);
         }
     }
 

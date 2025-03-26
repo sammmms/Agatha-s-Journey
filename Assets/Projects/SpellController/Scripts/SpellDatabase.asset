@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39aade41ce12b73499e7075f790ff933, type: 3}
+  m_Name: SpellDatabase
+  m_EditorClassIdentifier: 
+  spellData:
+  - spell: 1
+    spellPrefab: {fileID: 287056432625514407, guid: 3fa97b81d6a44bc4982eb3d91f179aad, type: 3}
+  - spell: 2
+    spellPrefab: {fileID: 6735300810260480193, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
+  - spell: 4
+    spellPrefab: {fileID: 950369842493697681, guid: 2f6ec1a16dc85a24c977f33ca8e4763b, type: 3}
+  - spell: 8
+    spellPrefab: {fileID: 3328282442038601198, guid: 82032d6fcabb6c04fbf5937f2e145585, type: 3}
+  - spell: 16
+    spellPrefab: {fileID: 5182280641448971461, guid: 7dacc3bbcaf4ee241b6c8ab53e89a38b, type: 3}
+  - spell: 32
+    spellPrefab: {fileID: 7759180355065354278, guid: d65fabf7ce437aaedb53dc82a5681ac0, type: 3}
+  - spell: 64
+    spellPrefab: {fileID: 4534381701493877084, guid: e2719c0a26b65174c95629db92cb96bc, type: 3}
+  - spell: 18
+    spellPrefab: {fileID: 7953013907061969366, guid: 9e150c69d996c2644a2499ecc2cbebfd, type: 3}
+  - spell: 6
+    spellPrefab: {fileID: 7236769584116962146, guid: b2a16c07871ccd441a9db25beeccfef4, type: 3}
+  - spell: 12
+    spellPrefab: {fileID: 470367661892998335, guid: 970b72619af35bf47b53cb2343db2c07, type: 3}
+  - spell: 5
+    spellPrefab: {fileID: 936504878234001782, guid: c54da4063023fdd439f2d8d3ea582bd3, type: 3}
+  - spell: 80
+    spellPrefab: {fileID: 4163774723918745587, guid: 6706d67452a6dd348a148fb6f05db5aa, type: 3}
+  - spell: 68
+    spellPrefab: {fileID: 0}
+  - spell: 96
+    spellPrefab: {fileID: 4949523596401240123, guid: 2a2f706a4e03f414ea5796ff13a469b3, type: 3}
+  - spell: 72
+    spellPrefab: {fileID: 0}
+  - spell: 22
+    spellPrefab: {fileID: 4693783035006191958, guid: 329ef724ccf6ff34fa3eb5370c0214b4, type: 3}
+  - spell: 112
+    spellPrefab: {fileID: 0}
+  - spell: 76
+    spellPrefab: {fileID: 7152181222183908573, guid: f018381f8512183428ce23b79f6e1122, type: 3}
+  - spell: 0
+    spellPrefab: {fileID: 0}
+  - spell: 0
+    spellPrefab: {fileID: 0}
+  - spell: 0
+    spellPrefab: {fileID: 0}

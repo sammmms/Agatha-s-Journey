@@ -60,4 +60,9 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
 
         JumpPressed = true;
     }
+
+    public void OnZoom(InputAction.CallbackContext context)
+    {
+
+    }
 }

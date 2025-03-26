@@ -14,10 +14,9 @@ GameObject:
   - component: {fileID: 6552507204900173005}
   - component: {fileID: 3785872907900253055}
   - component: {fileID: 6022271969225853841}
-  - component: {fileID: 6517515871476826885}
   m_Layer: 0
   m_Name: ThirdPersonCamera
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,13 +29,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6396492576730172824}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20106931, y: 0, z: 0, w: 0.979577}
-  m_LocalPosition: {x: 30.052296, y: 3.362, z: 26.901037}
+  m_LocalRotation: {x: 0.25340134, y: 0.00000004664218, z: -0.000000017060465, w: 0.9673613}
+  m_LocalPosition: {x: 29.965296, y: 3.6529999, z: 26.445038}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 23.199, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2574781438114758641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,10 +91,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetOffset: {x: 0, y: 0.5, z: 0}
+  TargetOffset: {x: 0, y: 0, z: 0}
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 2, y: 2, z: 1}
+    PositionDamping: {x: 1, y: 1, z: 1}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
@@ -103,16 +102,16 @@ MonoBehaviour:
   Radius: 10
   Orbits:
     Top:
-      Radius: 1.3
-      Height: 3.4
-    Center:
-      Radius: 3.5
-      Height: 1
-    Bottom:
       Radius: 2
-      Height: -1.3
-    SplineCurvature: 0.3
-  RecenteringTarget: 3
+      Height: 5
+    Center:
+      Radius: 4
+      Height: 2.25
+    Bottom:
+      Radius: 2.5
+      Height: 0.1
+    SplineCurvature: 0.5
+  RecenteringTarget: 2
   HorizontalAxis:
     Value: 0
     Center: 0
@@ -179,7 +178,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6396492576730172824}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a076c17fe76165e4f8ed21498b877bf9, type: 3}
   m_Name: 
@@ -235,7 +234,7 @@ MonoBehaviour:
       Owner: {fileID: 8668167973772255016}
       Enabled: 1
       Input:
-        InputAction: {fileID: -423771258819551211, guid: 1d6e640e716dc4ff6989b73d02023f2b, type: 3}
+        InputAction: {fileID: 2384602795412748019, guid: 074e40ce34ebb1d40a419753b869fb88, type: 3}
         Gain: -1
         LegacyInput: 
         LegacyGain: 1
@@ -246,42 +245,3 @@ MonoBehaviour:
         DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 1
---- !u!114 &6517515871476826885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6396492576730172824}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbe43d662878a7c43bcd44d43c9e2094, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CollideAgainst:
-    serializedVersion: 2
-    m_Bits: 1
-  IgnoreTag: 
-  TransparentLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  MinimumDistanceFromTarget: 0.3
-  AvoidObstacles:
-    Enabled: 1
-    DistanceLimit: 0
-    MinimumOcclusionTime: 0
-    CameraRadius: 0.4
-    UseFollowTarget:
-      Enabled: 0
-      YOffset: 0
-    Strategy: 0
-    MaximumEffort: 4
-    SmoothingTime: 0
-    Damping: 0.4
-    DampingWhenOccluded: 0.2
-  ShotQualityEvaluation:
-    Enabled: 0
-    OptimalDistance: 10
-    NearLimit: 5
-    FarLimit: 30
-    MaxQualityBoost: 0.2
