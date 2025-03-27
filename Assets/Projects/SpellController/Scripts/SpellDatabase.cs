@@ -24,7 +24,7 @@ public enum Spell
     ReinforcedBarrier = Barrier + Enhance,
     AmplifiedRecovery = Enhance + Heal,
     HighJump = Enhance + Lightweight,
-    BlazingSurge = Flare + Bolt,
+    OverloadBall = Flare + Bolt,
     LightningBolt = Arrow + Bolt,
     PiercingShot = Arrow + Enhance,
     ExplosiveShot = Arrow + Flare,

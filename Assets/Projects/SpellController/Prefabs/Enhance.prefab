@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 5633105859169279189}
   - component: {fileID: 8892362867270896947}
   - component: {fileID: 6194066678225355468}
+  - component: {fileID: 4175299645888431059}
   m_Layer: 0
   m_Name: Enhance
-  m_TagString: Untagged
+  m_TagString: Magic Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 950369842493697681}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 3.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35,7 +36,7 @@ Transform:
   - {fileID: 4703164406152008655}
   - {fileID: 1809260334987171219}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &8892362867270896947
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4836,6 +4837,24 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &4175299645888431059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950369842493697681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a41a58a480955e04387b5c5f114fb35e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 4
+  spellPrefab: {fileID: 950369842493697681}
+  spellCost: 0
+  spellCooldown: 0
+  buffDamage: 0
+  buffSpeed: 0
 --- !u!1 &3115090875162215688
 GameObject:
   m_ObjectHideFlags: 0

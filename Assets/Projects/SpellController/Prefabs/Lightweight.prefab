@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 7926948135111230527}
   - component: {fileID: 6900906089914641046}
   - component: {fileID: 5379226469623225710}
+  - component: {fileID: 5309912202648043140}
   m_Layer: 0
   m_Name: Lightweight
-  m_TagString: Untagged
+  m_TagString: Magic Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,14 +27,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 287056432625514407}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 52.737022, y: 0, z: 54.08092}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8086738004182646810}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &6900906089914641046
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4844,6 +4845,24 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &5309912202648043140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287056432625514407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a41a58a480955e04387b5c5f114fb35e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 1
+  spellPrefab: {fileID: 287056432625514407}
+  spellCost: 0
+  spellCooldown: 0
+  buffDamage: 0
+  buffSpeed: 0
 --- !u!1 &3491940220111987747
 GameObject:
   m_ObjectHideFlags: 0

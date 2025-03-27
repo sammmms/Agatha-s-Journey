@@ -14695,9 +14695,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3105063882781243435}
+  - component: {fileID: 5283681607109653991}
   m_Layer: 0
   m_Name: ShockingBarrier
-  m_TagString: Untagged
+  m_TagString: Barrier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -14719,6 +14720,23 @@ Transform:
   - {fileID: 6312052919041174719}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5283681607109653991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7953013907061969366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89769caf2b303314288624eff9ac06d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 18
+  spellPrefab: {fileID: 7953013907061969366}
+  spellCost: 0
+  spellCooldown: 0
+  barrierDamageReduction: 0
 --- !u!1 &9029681491690819333
 GameObject:
   m_ObjectHideFlags: 0

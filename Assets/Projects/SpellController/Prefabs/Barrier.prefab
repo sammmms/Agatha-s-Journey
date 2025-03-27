@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 532141164536744052}
   - component: {fileID: 3168929052328535303}
   - component: {fileID: 4139685464820857399}
+  - component: {fileID: 8653960107443426547}
   m_Layer: 0
   m_Name: Barrier
-  m_TagString: Untagged
+  m_TagString: Magic Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -109,3 +110,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8653960107443426547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735300810260480193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89769caf2b303314288624eff9ac06d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 2
+  spellPrefab: {fileID: 6735300810260480193}
+  spellCost: 0
+  spellCooldown: 0
+  barrierDamageReduction: 0

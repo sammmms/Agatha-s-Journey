@@ -44192,9 +44192,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2811107021358980229}
+  - component: {fileID: 6404359823854060240}
   m_Layer: 0
   m_Name: Purifying Blizzard
-  m_TagString: Untagged
+  m_TagString: Magic Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44221,6 +44222,27 @@ Transform:
   - {fileID: 1350972264507308342}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6404359823854060240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7152181222183908573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beab2e153fc1ecd4daf5f03091ccaa72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 76
+  spellPrefab: {fileID: 7152181222183908573}
+  spellCost: 0
+  spellCooldown: 0
+  impactDamage: 0
+  impactRadius: 0
+  impactStunDuration: 0
+  impactStun: 0
+  spellDuration: 0
 --- !u!1 &7909350158318305221
 GameObject:
   m_ObjectHideFlags: 0

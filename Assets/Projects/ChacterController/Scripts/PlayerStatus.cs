@@ -25,9 +25,9 @@ public class PlayerStatus : MonoBehaviour
     [SerializeField] public float manaRegenRate = 1;
     [SerializeField] public float staminaRegenRate = 1;
 
-/// <summary>
-///   This is the damage reduction of the player, usually obtain through barrier
-/// </summary>
+    /// <summary>
+    ///   This is the damage reduction of the player, usually obtain through barrier
+    /// </summary>
     [SerializeField] float damageReduction = 0;
     [SerializeField] float physicalDamageReduction = 0;
     [SerializeField] float magicalDamageReduction = 0;
@@ -35,5 +35,54 @@ public class PlayerStatus : MonoBehaviour
     // Regen every second
     private float regenRate = 1f;
 
-    
+    private void Start()
+    {
+        InvokeRepeating("RegenHealth", 1, regenRate);
+        InvokeRepeating("RegenMana", 1, regenRate);
+        InvokeRepeating("RegenStamina", 1, regenRate);
+    }
+
+    private void RegenHealth()
+    {
+        if (currentHealthPoint < maxHealthPoint)
+        {
+            currentHealthPoint += healthRegenRate;
+        }
+    }
+
+    private void RegenMana()
+    {
+        if (currentManaPoint < maxManaPoint)
+        {
+            currentManaPoint += manaRegenRate;
+        }
+    }
+
+    private void RegenStamina()
+    {
+        if (currentStaminaPoint < maxStaminaPoint)
+        {
+            currentStaminaPoint += staminaRegenRate;
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealthPoint -= damage;
+    }
+
+    public void TakeMana(float mana)
+    {
+        currentManaPoint -= mana;
+    }
+
+    public void TakeStamina(float stamina)
+    {
+        currentStaminaPoint -= stamina;
+    }
+
+    public void Heal(float heal)
+    {
+        currentHealthPoint += heal;
+    }
 }

@@ -49,8 +49,8 @@ MonoBehaviour:
     spellPrefab: {fileID: 0}
   - spell: 76
     spellPrefab: {fileID: 7152181222183908573, guid: f018381f8512183428ce23b79f6e1122, type: 3}
-  - spell: 0
-    spellPrefab: {fileID: 0}
+  - spell: 48
+    spellPrefab: {fileID: 2551028835978452091, guid: 35833dba91c023c4bbd389febc4c370d, type: 3}
   - spell: 0
     spellPrefab: {fileID: 0}
   - spell: 0

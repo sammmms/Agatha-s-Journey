@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
     private PlayerState _playerState;
 
     private Vector2 _cameraRotation = Vector2.zero;
-    private Vector2 _playerTargetRotation = Vector2.zero;
 
     private float _verticalVelocity = 0f;
 

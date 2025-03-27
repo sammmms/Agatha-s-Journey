@@ -4,9 +4,23 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(-2)]
 public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomotionMapActions
 {
-    public bool SprintToggled = false;
+    private bool _SprintToggled = false;
+    public bool SprintToggled
+    {
+        get
+        {
+            return _SprintToggled;
+        }
+    }
 
-    public bool JumpPressed = false;
+    private bool _JumpPressed = false;
+    public bool JumpPressed
+    {
+        get
+        {
+            return _JumpPressed;
+        }
+    }
     public PlayerControls PlayerControls { get; private set; }
     public Vector2 MovementInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -28,7 +42,7 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
 
     private void LateUpdate()
     {
-        JumpPressed = false;
+        _JumpPressed = false;
     }
 
     public void OnMovement(InputAction.CallbackContext context)
@@ -45,11 +59,11 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
     {
         if (context.performed)
         {
-            SprintToggled = true;
+            _SprintToggled = true;
         }
         else
         {
-            SprintToggled = false;
+            _SprintToggled = false;
         }
     }
 
@@ -58,7 +72,7 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
         if (!context.performed)
             return;
 
-        JumpPressed = true;
+        _JumpPressed = true;
     }
 
     public void OnZoom(InputAction.CallbackContext context)

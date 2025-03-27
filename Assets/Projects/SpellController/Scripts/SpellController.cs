@@ -1,41 +1,44 @@
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using TMPro;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Windows;
 
 
 
 public class SpellController : MonoBehaviour
 {
     [SerializeField] private SpellDatabase _spellDatabase;
+    [SerializeField] private ProjectileShooter _projectileShooter;
+    private SpellLocomotionInput _spellLocomotionInput;
+    private PlayerState _playerState;
+    private PlayerStatus _playerStatus;
     /// <summary>
     ///    List of spells that can be selected by the player
     ///    - This is the list of spells that the player can select from the hotbar
     ///    - This spell can be re-arranged by the player
     /// </summary>
-    public List<Spell> selectableSpell = new List<Spell>(4);
+    public List<Spell> hotbarSpell = new List<Spell>()
+    {
+        Spell.Lightweight,
+        Spell.Bolt,
+    };
 
     /// <summary>
     ///   List of spells that are currently active
     /// </summary>
-    public List<Spell> spells = new List<Spell>(3);
+    public List<Spell> activeSpells = new List<Spell>();
 
     /// <summary>
     /// List of active auras
     /// </summary>
     private Dictionary<Spell, GameObject> activeAura = new();
     private Dictionary<Spell, GameObject> shootableProjectiles = new();
-
+    private Dictionary<Spell, float> spellCooldown = new();
     private static readonly Dictionary<Spell, Spell> twoSpellCombos = new()
     {
         {Spell.Barrier | Spell.Bolt, Spell.ShockingBarrier},
         {Spell.Barrier | Spell.Enhance, Spell.ReinforcedBarrier},
         {Spell.Enhance | Spell.Heal, Spell.AmplifiedRecovery},
         {Spell.Enhance | Spell.Lightweight, Spell.HighJump},
-        {Spell.Flare | Spell.Bolt, Spell.BlazingSurge},
+        {Spell.Flare | Spell.Bolt, Spell.OverloadBall},
         {Spell.Arrow | Spell.Bolt, Spell.LightningBolt},
         {Spell.Arrow | Spell.Enhance, Spell.PiercingShot},
         {Spell.Arrow | Spell.Flare, Spell.ExplosiveShot},
@@ -63,11 +66,7 @@ public class SpellController : MonoBehaviour
         {Spell.Heal | Spell.Enhance | Spell.Flare, Spell.SurgeOfBlessing},
     };
 
-    private SpellLocomotionInput _spellLocomotionInput;
-    private PlayerState _playerState;
-    private Camera _playerCamera;
 
-    [SerializeField] private float spellSpeed = 10f;
 
     private void Awake()
     {
@@ -76,6 +75,8 @@ public class SpellController : MonoBehaviour
         _spellLocomotionInput.OnShootTriggered += HandlePlayerClick;
 
         _playerState = GetComponent<PlayerState>();
+        _projectileShooter = GetComponent<ProjectileShooter>();
+        _playerStatus = GetComponent<PlayerStatus>();
     }
 
     private void OnDestroy()
@@ -87,166 +88,12 @@ public class SpellController : MonoBehaviour
 
     }
 
-    private void Start()
-    {
-        _playerCamera = Camera.main;
-    }
-
     private void Update()
     {
         HandleActiveAura();
     }
 
-    private void HandleHotbarInput(int index)
-    {
-        Spell spell = selectableSpell[index - 1];
-
-        ToggleHotbarItem(spell);
-
-        List<Spell> spellToActivate = HandleCombinationSpell();
-
-        print($"spell to remove : {spellToActivate}");
-
-        List<Spell> spellToRemove = new List<Spell>();
-        foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
-        {
-            if (!spellToActivate.Contains(kvp.Key))
-            {
-                spellToRemove.Add(kvp.Key);
-                print($"spellToRemove: {kvp.Key}");
-            }
-        }
-
-        foreach (Spell spellToRemoveKey in spellToRemove)
-        {
-            Destroy(activeAura[spellToRemoveKey]);
-            activeAura.Remove(spellToRemoveKey);
-        }
-
-        foreach (Spell _spell in spellToActivate)
-        {
-            print($"spellToActivate: {_spell}");
-            SetSpellAsActive(_spell);
-        }
-    }
-
-    private List<Spell> HandleCombinationSpell()
-    {
-        List<Spell> newActiveSpell = new();
-
-        if (spells.Count == 0)
-        {
-            return newActiveSpell;
-        }
-
-        if (spells.Count == 1)
-        {
-            newActiveSpell.Add(spells[0]);
-            return newActiveSpell;
-        }
-
-
-        // Check three spell combos
-        if (spells.Count == 3)
-        {
-            Spell threeSpellCombo = (Spell)spells[0] | (Spell)spells[1] | (Spell)spells[2];
-
-            if (threeSpellCombos.ContainsKey(threeSpellCombo))
-            {
-                newActiveSpell.Add(threeSpellCombos[threeSpellCombo]);
-                return newActiveSpell;
-            }
-        }
-
-
-        List<Spell> combinedSpell = new(spells);
-        foreach (Spell spell in spells)
-        {
-            foreach (Spell combo in spells)
-            {
-                Spell twoSpellCombo = spell | combo;
-
-                if (twoSpellCombos.ContainsKey(twoSpellCombo) && !newActiveSpell.Contains(twoSpellCombos[twoSpellCombo]))
-                {
-                    newActiveSpell.Add(twoSpellCombos[twoSpellCombo]);
-                    combinedSpell.Remove(spell);
-                    combinedSpell.Remove(combo);
-                    break;
-                }
-            }
-
-            if (combinedSpell.Count < 3)
-            {
-                break;
-            }
-        }
-
-        foreach (Spell spell in combinedSpell)
-        {
-            newActiveSpell.Add(spell);
-        }
-
-        return newActiveSpell;
-    }
-
-    private void SetSpellAsActive(Spell spell)
-    {
-        if (activeAura.ContainsKey(spell) || shootableProjectiles.ContainsKey(spell))
-        {
-            return;
-        }
-
-        GameObject spellPrefab = GetGameObject(spell);
-        bool isAura = auraSpell.Contains(spell);
-
-        if (isAura)
-        {
-            GameObject aura = Instantiate(spellPrefab, transform.position, Quaternion.identity);
-            activeAura.Add(spell, aura);
-        }
-        else
-        {
-            shootableProjectiles.Add(spell, spellPrefab);
-        }
-    }
-
-
-    private void ToggleHotbarItem(Spell spell)
-    {
-        if (spells.Contains(spell))
-        {
-            spells.Remove(spell);
-        }
-        else
-        {
-            spells.Add(spell);
-        }
-
-        print($"Selected spells: {string.Join(", ", spells)}");
-    }
-
-    private void HandleActiveAura()
-    {
-        foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
-        {
-            Vector3 position = transform.position;
-
-            bool isBarrierRelated = kvp.Key == Spell.Barrier || kvp.Key == Spell.ReinforcedBarrier || kvp.Key == Spell.ShockwaveBarrier;
-
-            position.y += isBarrierRelated ? 0.8f : 0f;
-            kvp.Value.transform.position = position;
-        }
-    }
-
-    private GameObject GetGameObject(Spell spell)
-    {
-        if (spell == Spell.None) return null;
-
-        return _spellDatabase.GetSpellPrefab(spell);
-    }
-
-
-
+    #region Player Inputs
     private void HandlePlayerClick(ShootMode shootMode)
     {
         if (shootMode == ShootMode.AutoTarget)
@@ -273,6 +120,246 @@ public class SpellController : MonoBehaviour
         }
     }
 
+    private void HandleHotbarInput(int index)
+    {
+        Spell spell = hotbarSpell[index - 1];
+
+        ToggleHotbarItem(spell);
+
+        HandleSpellCombination();
+    }
+
+    private void ToggleHotbarItem(Spell spell)
+    {
+        if (activeSpells.Contains(spell))
+        {
+            activeSpells.Remove(spell);
+        }
+        else
+        {
+            activeSpells.Add(spell);
+        }
+
+        // TODO: Handle UI //
+    }
+
+    #endregion
+
+    private void HandleSpellCombination()
+    {
+        List<Spell> spellToActivate = GetSpellCombination();
+
+
+        HashSet<Spell> activeSpells = new HashSet<Spell>(activeAura.Keys);
+        activeSpells.UnionWith(shootableProjectiles.Keys);
+
+        HashSet<Spell> spellToRemove = new HashSet<Spell>();
+        foreach (Spell spell in activeSpells)
+        {
+            if (!spellToActivate.Contains(spell))
+            {
+                spellToRemove.Add(spell);
+            }
+        }
+
+        foreach (Spell spell in spellToRemove)
+        {
+            HandleSpellDeactivation(spell);
+        }
+
+        foreach (Spell spell in spellToActivate)
+        {
+            HandleSpellActivation(spell);
+        }
+    }
+    private List<Spell> GetSpellCombination()
+    {
+        List<Spell> newActiveSpell = new();
+
+        if (activeSpells.Count == 0)
+        {
+            return newActiveSpell;
+        }
+
+        if (activeSpells.Count == 1)
+        {
+            newActiveSpell.Add(activeSpells[0]);
+            return newActiveSpell;
+        }
+
+
+        // Check three spell combos
+        if (activeSpells.Count == 3)
+        {
+            Spell threeSpellCombo = activeSpells[0] | activeSpells[1] | activeSpells[2];
+
+            if (threeSpellCombos.ContainsKey(threeSpellCombo))
+            {
+                newActiveSpell.Add(threeSpellCombos[threeSpellCombo]);
+                return newActiveSpell;
+            }
+        }
+
+
+        List<Spell> combinedSpell = new(activeSpells);
+        foreach (Spell spell in activeSpells)
+        {
+            foreach (Spell combo in activeSpells)
+            {
+                Spell twoSpellCombo = spell | combo;
+
+                if (twoSpellCombos.ContainsKey(twoSpellCombo) && !newActiveSpell.Contains(twoSpellCombos[twoSpellCombo]))
+                {
+                    newActiveSpell.Add(twoSpellCombos[twoSpellCombo]);
+                    combinedSpell.Remove(spell);
+                    combinedSpell.Remove(combo);
+                    break;
+                }
+            }
+
+            if (combinedSpell.Count < 3)
+            {
+                break;
+            }
+        }
+
+        foreach (Spell spell in combinedSpell)
+        {
+            newActiveSpell.Add(spell);
+        }
+
+        return newActiveSpell;
+    }
+    private void HandleActiveAura()
+    {
+        HashSet<Spell> spellToRemove = new();
+        foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
+        {
+            BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
+
+
+            if (!spellAttribute.canCastSpell(0, _playerStatus.currentManaPoint))
+            {
+                spellToRemove.Add(kvp.Key);
+                continue;
+            }
+
+            Vector3 position = transform.position;
+
+            bool isBarrierRelated = kvp.Key == Spell.Barrier || kvp.Key == Spell.ReinforcedBarrier || kvp.Key == Spell.ShockwaveBarrier;
+
+            position.y += isBarrierRelated ? 0.8f : 0f;
+            kvp.Value.transform.position = position;
+        }
+
+        if (spellToRemove.Count == 0)
+        {
+            return;
+        }
+
+        List<Spell> spellToActivate = new();
+        foreach (Spell spell in spellToRemove)
+        {
+            HandleAuraDeactivation(GetGameObject(spell));
+
+            List<Spell> baseSpell = GetBaseSpellOf(spell);
+
+            foreach (Spell baseSpellItem in baseSpell)
+            {
+                spellToActivate.Add(baseSpellItem);
+            }
+        }
+
+        foreach (Spell spell in spellToActivate)
+        {
+            HandleSpellActivation(spell);
+        }
+    }
+
+    private void HandleSpellActivation(Spell spell)
+    {
+        if (activeAura.ContainsKey(spell) || shootableProjectiles.ContainsKey(spell))
+        {
+            return;
+        }
+
+        GameObject spellPrefab = GetGameObject(spell);
+        bool isAura = auraSpell.Contains(spell);
+
+        if (isAura)
+        {
+            HandleAuraActivation(spellPrefab);
+        }
+        else
+        {
+            shootableProjectiles.Add(spell, spellPrefab);
+        }
+    }
+
+    private void HandleSpellDeactivation(Spell spell)
+    {
+        if (activeAura.ContainsKey(spell))
+        {
+            HandleAuraDeactivation(GetGameObject(spell));
+        }
+        else if (shootableProjectiles.ContainsKey(spell))
+        {
+            shootableProjectiles.Remove(spell);
+        }
+    }
+
+    private List<Spell> GetBaseSpellOf(Spell spell)
+    {
+        List<Spell> baseSpell = new();
+
+        foreach (KeyValuePair<Spell, Spell> kvp in twoSpellCombos)
+        {
+            if (kvp.Value == spell)
+            {
+                baseSpell.Add(kvp.Key);
+                break;
+            }
+        }
+
+        foreach (KeyValuePair<Spell, Spell> kvp in threeSpellCombos)
+        {
+            if (kvp.Value == spell)
+            {
+                baseSpell.Add(kvp.Key);
+                break;
+            }
+        }
+
+        return baseSpell;
+    }
+
+    private GameObject GetGameObject(Spell spell)
+    {
+        if (spell == Spell.None) return null;
+
+        return _spellDatabase.GetSpellPrefab(spell);
+    }
+
+    #region Activation Method
+    private void HandleAuraActivation(GameObject spellPrefab)
+    {
+        BaseSpellAttribute spellAttribute = spellPrefab.GetComponent<BaseSpellAttribute>();
+
+        if (spellAttribute == null)
+        {
+            return;
+        }
+
+        spellAttribute.castSpell();
+    }
+
+    private void HandleAuraDeactivation(GameObject spellPrefab)
+    {
+        Destroy(activeAura[spellPrefab.GetComponent<BaseSpellAttribute>().spell]);
+        activeAura.Remove(spellPrefab.GetComponent<BaseSpellAttribute>().spell);
+    }
+
+
     private void HandlePlayerShoot()
     {
         foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
@@ -281,16 +368,30 @@ public class SpellController : MonoBehaviour
         }
     }
 
-    private void HandleLaunchSpell(GameObject spell)
+    private void HandleLaunchSpell(GameObject spellPrefab)
     {
-        // Get direction using camera
-        Vector3 targetPosition = _playerCamera.transform.position + _playerCamera.transform.forward * 10f;
+        BaseSpellAttribute spellAttribute = spellPrefab.GetComponent<BaseSpellAttribute>();
 
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        Rigidbody spellRb = spell.GetComponent<Rigidbody>();
+        if (spellAttribute == null)
+        {
+            return;
+        }
 
-        spellRb.linearVelocity = direction * spellSpeed;
+        Spell spell = spellAttribute.spell;
 
-        print($"Launched : {spell.name} to {spellRb.linearVelocity}");
+        if (spellCooldown.ContainsKey(spell))
+        {
+            bool canCast = spellAttribute.canCastSpell(spellCooldown[spell], _playerStatus.currentManaPoint);
+
+            if (!canCast)
+            {
+                return;
+            }
+        }
+
+        _playerStatus.TakeMana(spellAttribute.spellCost);
+        spellAttribute.castSpell();
+        spellCooldown[spell] = spellAttribute.spellCooldown;
     }
+    #endregion
 }

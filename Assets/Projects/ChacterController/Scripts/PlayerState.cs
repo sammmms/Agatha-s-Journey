@@ -32,4 +32,5 @@ public enum PlayerMovementState
     Strafing = 6,
     Stunned = 7,
     Aiming = 8,
+    Casting = 9,
 }

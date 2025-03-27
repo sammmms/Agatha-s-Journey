@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
+  - Magic Projectile
+  - Barrier
+  - Enemies
   layers:
   - Default
   - TransparentFX

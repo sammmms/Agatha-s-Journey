@@ -59,4 +59,9 @@ public class PlayerAnimation : MonoBehaviour
         _animator.SetFloat(inputYHash, _currentBlendInput.y);
         _animator.SetFloat(inputMagnitudeHash, _currentBlendInput.magnitude);
     }
+
+    public void CastSpellAnimation()
+    {
+        _animator.SetTrigger("isCasting");
+    }
 }
