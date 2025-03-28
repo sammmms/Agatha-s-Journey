@@ -152,8 +152,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 64
   spellPrefab: {fileID: 4534381701493877084}
-  spellCost: 0
-  spellCooldown: 0
+  spellCost: 5
+  spellCooldown: 2
   spellSpeed: 0
   spellDamage: 0
   stunDuration: 0

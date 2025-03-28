@@ -5107,11 +5107,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 16
   spellPrefab: {fileID: 5182280641448971461}
-  spellCost: 0
-  spellCooldown: 0
-  spellSpeed: 0
-  spellDamage: 0
-  stunDuration: 0
+  spellCost: 7
+  spellCooldown: 4
+  spellSpeed: 10
+  spellDamage: 5
+  stunDuration: 1
   stunPerInstance: 0
 --- !u!1 &5386811135688203803
 GameObject:

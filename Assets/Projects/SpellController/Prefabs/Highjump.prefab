@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6419233856979226369}
-  - component: {fileID: 8797910129764891526}
+  - component: {fileID: 1578165530206869627}
   m_Layer: 0
   m_Name: HighJump
   m_TagString: Magic Projectile
@@ -35,7 +35,7 @@ Transform:
   - {fileID: 7066119239424631463}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8797910129764891526
+--- !u!114 &1578165530206869627
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,15 +44,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 936504878234001782}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a41a58a480955e04387b5c5f114fb35e, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f87e806a3bc18447abcdda9211aaf78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spell: 5
   spellPrefab: {fileID: 936504878234001782}
-  spellCost: 0
+  spellCost: 5
   spellCooldown: 0
-  buffDamage: 0
-  buffSpeed: 0
+  jumpBuffAmount: 10
+  gravityBuffAmount: 15
 --- !u!1 &3630000976912987081
 GameObject:
   m_ObjectHideFlags: 0

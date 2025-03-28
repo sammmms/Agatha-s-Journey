@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5633105859169279189}
   - component: {fileID: 8892362867270896947}
   - component: {fileID: 6194066678225355468}
-  - component: {fileID: 4175299645888431059}
+  - component: {fileID: 8859083888317013226}
   m_Layer: 0
   m_Name: Enhance
   m_TagString: Magic Projectile
@@ -4837,7 +4837,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &4175299645888431059
+--- !u!114 &8859083888317013226
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4846,15 +4846,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 950369842493697681}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a41a58a480955e04387b5c5f114fb35e, type: 3}
+  m_Script: {fileID: 11500000, guid: fb15ba0d9d5db4542b138b0830e16062, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spell: 4
   spellPrefab: {fileID: 950369842493697681}
-  spellCost: 0
+  spellCost: 5
   spellCooldown: 0
-  buffDamage: 0
-  buffSpeed: 0
+  damageBuffAmount: 5
 --- !u!1 &3115090875162215688
 GameObject:
   m_ObjectHideFlags: 0

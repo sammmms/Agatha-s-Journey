@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7926948135111230527}
   - component: {fileID: 6900906089914641046}
   - component: {fileID: 5379226469623225710}
-  - component: {fileID: 5309912202648043140}
+  - component: {fileID: 7248873538081370638}
   m_Layer: 0
   m_Name: Lightweight
   m_TagString: Magic Projectile
@@ -4845,7 +4845,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &5309912202648043140
+--- !u!114 &7248873538081370638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4854,15 +4854,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 287056432625514407}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a41a58a480955e04387b5c5f114fb35e, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d23435066b0af843a9ed71f10be1d21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   spell: 1
   spellPrefab: {fileID: 287056432625514407}
-  spellCost: 0
+  spellCost: 5
   spellCooldown: 0
-  buffDamage: 0
-  buffSpeed: 0
+  speedBuffAmount: 3
 --- !u!1 &3491940220111987747
 GameObject:
   m_ObjectHideFlags: 0

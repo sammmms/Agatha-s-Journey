@@ -44236,13 +44236,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 76
   spellPrefab: {fileID: 7152181222183908573}
-  spellCost: 0
+  spellCost: 50
   spellCooldown: 0
-  impactDamage: 0
+  impactDamage: 20
   impactRadius: 0
   impactStunDuration: 0
   impactStun: 0
-  spellDuration: 0
+  spellDuration: 8
 --- !u!1 &7909350158318305221
 GameObject:
   m_ObjectHideFlags: 0

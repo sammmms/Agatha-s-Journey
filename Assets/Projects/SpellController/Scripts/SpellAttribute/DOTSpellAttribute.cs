@@ -6,12 +6,7 @@ public class DamageOverTimeSpellAttribute : BaseSpellAttribute
     public float dotDuration;
     public float dotTick;
 
-    public override bool canCastSpell(float currentCooldown, float currentMana)
-    {
-        return currentCooldown >= spellCooldown && currentMana >= spellCost;
-    }
-
-    public override GameObject castSpell()
+    public override GameObject castSpell(PlayerController playerController)
     {
         throw new System.NotImplementedException();
     }

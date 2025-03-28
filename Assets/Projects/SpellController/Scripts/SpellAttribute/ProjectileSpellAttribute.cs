@@ -2,19 +2,14 @@ using UnityEngine;
 
 public class ProjectileSpellAttribute : BaseSpellAttribute
 {
-    public float spellSpeed;
+    public float spellSpeed = 10f;
     public float spellDamage;
     public float stunDuration;
     public float stunPerInstance;
 
-    public override bool canCastSpell(float currentCooldown, float currentMana)
+    public override GameObject castSpell(PlayerController playerController)
     {
-        return currentCooldown >= spellCooldown && currentMana >= spellCost;
-    }
-
-    public override GameObject castSpell()
-    {
-        ProjectileShooter projectileShooter = GetComponent<ProjectileShooter>();
+        ProjectileShooter projectileShooter = playerController.GetComponent<ProjectileShooter>();
 
         projectileShooter.LaunchProjectile(spellPrefab);
 

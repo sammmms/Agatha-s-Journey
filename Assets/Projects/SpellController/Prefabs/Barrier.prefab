@@ -124,6 +124,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 2
   spellPrefab: {fileID: 6735300810260480193}
-  spellCost: 0
+  spellCost: 5
   spellCooldown: 0
-  barrierDamageReduction: 0
+  barrierDamageReduction: 7

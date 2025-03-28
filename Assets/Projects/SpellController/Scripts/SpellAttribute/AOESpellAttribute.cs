@@ -8,16 +8,18 @@ public class AreaOfEffectSpellAttribute : BaseSpellAttribute
     public float impactStun;
     public float spellDuration;
 
-    public override bool canCastSpell(float currentCooldown, float currentMana)
+    public override GameObject castSpell(PlayerController playerController)
     {
-        return currentCooldown >= spellCooldown && currentMana >= spellCost;
-    }
+        AOEInvoker aoeInvoker = playerController.GetComponent<AOEInvoker>();
 
-    public override GameObject castSpell()
-    {
-        if (TryGetComponent(out AOEInvoker aoeInvoker))
+        if (aoeInvoker != null)
         {
             aoeInvoker.CastAOESpell(spellPrefab);
+            return spellPrefab;
+        }
+        else
+        {
+            Debug.LogError("AOEInvoker component not found on PlayerController.");
         }
 
         return null;

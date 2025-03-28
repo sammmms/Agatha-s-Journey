@@ -7,7 +7,10 @@ public abstract class BaseSpellAttribute : MonoBehaviour
     public float spellCost;
     public float spellCooldown;
 
-    public abstract bool canCastSpell(float currentCooldown, float currentMana);
+    public bool canCastSpell(float currentCooldown, float currentMana)
+    {
+        return currentCooldown >= spellCooldown && currentMana >= spellCost;
+    }
 
-    public abstract GameObject castSpell();
+    public abstract GameObject castSpell(PlayerController playerController);
 }

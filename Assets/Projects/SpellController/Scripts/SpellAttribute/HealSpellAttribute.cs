@@ -1,16 +1,22 @@
 using UnityEngine;
 
-public class HealSpellAttribute : BaseSpellAttribute
+public class HealSpellAttribute : AuraSpellAttribute
 {
     public float healAmount;
 
-    public override bool canCastSpell(float currentCooldown, float currentMana)
+
+    public override GameObject castSpell(PlayerController playerController)
     {
-        return currentCooldown >= spellCooldown && currentMana >= spellCost;
+        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+
+        playerStatus.ApplyHealBuff(healAmount);
+
+        return Instantiate(spellPrefab, playerController.transform.position, Quaternion.identity);
     }
 
-    public override GameObject castSpell()
+    public override void cancelSpell(PlayerController playerController)
     {
-        return Instantiate(spellPrefab, transform.position, Quaternion.identity);
+        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+        playerStatus.RemoveHealBuff(healAmount);
     }
 }

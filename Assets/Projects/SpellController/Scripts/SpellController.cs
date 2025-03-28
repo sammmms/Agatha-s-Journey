@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,29 +7,16 @@ using UnityEngine;
 public class SpellController : MonoBehaviour
 {
     [SerializeField] private SpellDatabase _spellDatabase;
-    [SerializeField] private ProjectileShooter _projectileShooter;
     private SpellLocomotionInput _spellLocomotionInput;
     private PlayerState _playerState;
     private PlayerStatus _playerStatus;
-    /// <summary>
-    ///    List of spells that can be selected by the player
-    ///    - This is the list of spells that the player can select from the hotbar
-    ///    - This spell can be re-arranged by the player
-    /// </summary>
     public List<Spell> hotbarSpell = new List<Spell>()
     {
         Spell.Lightweight,
         Spell.Bolt,
     };
 
-    /// <summary>
-    ///   List of spells that are currently active
-    /// </summary>
     public List<Spell> activeSpells = new List<Spell>();
-
-    /// <summary>
-    /// List of active auras
-    /// </summary>
     private Dictionary<Spell, GameObject> activeAura = new();
     private Dictionary<Spell, GameObject> shootableProjectiles = new();
     private Dictionary<Spell, float> spellCooldown = new();
@@ -66,7 +54,8 @@ public class SpellController : MonoBehaviour
         {Spell.Heal | Spell.Enhance | Spell.Flare, Spell.SurgeOfBlessing},
     };
 
-
+    private Coroutine _consumeManaCoroutine;
+    private bool _isDrainingMana = false;
 
     private void Awake()
     {
@@ -75,8 +64,9 @@ public class SpellController : MonoBehaviour
         _spellLocomotionInput.OnShootTriggered += HandlePlayerClick;
 
         _playerState = GetComponent<PlayerState>();
-        _projectileShooter = GetComponent<ProjectileShooter>();
         _playerStatus = GetComponent<PlayerStatus>();
+
+
     }
 
     private void OnDestroy()
@@ -235,18 +225,11 @@ public class SpellController : MonoBehaviour
         HashSet<Spell> spellToRemove = new();
         foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
         {
-            BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
-
-
-            if (!spellAttribute.canCastSpell(0, _playerStatus.currentManaPoint))
-            {
-                spellToRemove.Add(kvp.Key);
-                continue;
-            }
-
             Vector3 position = transform.position;
 
-            bool isBarrierRelated = kvp.Key == Spell.Barrier || kvp.Key == Spell.ReinforcedBarrier || kvp.Key == Spell.ShockwaveBarrier;
+            BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
+
+            bool isBarrierRelated = spellAttribute is BarrierSpellAttribute;
 
             position.y += isBarrierRelated ? 0.8f : 0f;
             kvp.Value.transform.position = position;
@@ -350,13 +333,66 @@ public class SpellController : MonoBehaviour
             return;
         }
 
-        spellAttribute.castSpell();
+        GameObject instance = HandleCastSpell(spellAttribute);
+
+        activeAura.Add(spellAttribute.spell, instance);
+        StartManaDrain();
     }
 
     private void HandleAuraDeactivation(GameObject spellPrefab)
     {
-        Destroy(activeAura[spellPrefab.GetComponent<BaseSpellAttribute>().spell]);
-        activeAura.Remove(spellPrefab.GetComponent<BaseSpellAttribute>().spell);
+        BaseSpellAttribute spellAttribute = spellPrefab.GetComponent<BaseSpellAttribute>();
+
+
+        bool isAura = spellAttribute is AuraSpellAttribute;
+        if (!isAura)
+        {
+            return;
+        }
+
+        Spell spell = spellAttribute.spell;
+        Destroy(activeAura[spell]);
+        activeAura.Remove(spell);
+
+        (spellAttribute as AuraSpellAttribute).cancelSpell(GetComponent<PlayerController>());
+    }
+
+    private void StartManaDrain()
+    {
+        print(_isDrainingMana);
+        if (_isDrainingMana) return;
+
+        _isDrainingMana = true;
+        _consumeManaCoroutine = StartCoroutine(ConsumeAuraMana());
+    }
+    private IEnumerator ConsumeAuraMana()
+    {
+        while (activeAura.Count > 0)
+        {
+            foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
+            {
+                BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
+
+                if (spellAttribute == null)
+                {
+                    continue;
+                }
+
+                if (_playerStatus.currentManaPoint < spellAttribute.spellCost)
+                {
+                    HandleSpellDeactivation(kvp.Key);
+                    yield break;
+                }
+
+                _playerStatus.TakeMana(spellAttribute.spellCost);
+            }
+
+            yield return new WaitForSeconds(1f);
+        }
+
+        print("Stop Coroutine");
+        _isDrainingMana = false;
+        StopCoroutine(_consumeManaCoroutine);
     }
 
 
@@ -390,8 +426,16 @@ public class SpellController : MonoBehaviour
         }
 
         _playerStatus.TakeMana(spellAttribute.spellCost);
-        spellAttribute.castSpell();
+
+        HandleCastSpell(spellAttribute);
         spellCooldown[spell] = spellAttribute.spellCooldown;
+    }
+
+    private GameObject HandleCastSpell(BaseSpellAttribute spellAttribute)
+    {
+        PlayerController playerController = GetComponent<PlayerController>();
+
+        return spellAttribute.castSpell(playerController);
     }
     #endregion
 }

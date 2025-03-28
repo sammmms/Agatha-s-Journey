@@ -9911,9 +9911,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 80
   spellPrefab: {fileID: 4163774723918745587}
-  spellCost: 0
-  spellCooldown: 0
-  spellSpeed: 0
+  spellCost: 10
+  spellCooldown: 8
+  spellSpeed: 10
   spellDamage: 0
-  stunDuration: 0
+  stunDuration: 2
   stunPerInstance: 0

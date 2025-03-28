@@ -1,19 +1,23 @@
 using UnityEngine;
 
-public class BarrierSpellAttribute : BaseSpellAttribute
+public class BarrierSpellAttribute : AuraSpellAttribute
 {
     public float barrierDamageReduction;
 
-    public override bool canCastSpell(float currentCooldown, float currentMana)
+    public override GameObject castSpell(PlayerController playerController)
     {
-        return currentCooldown >= spellCooldown && currentMana >= spellCost;
-    }
-
-    public override GameObject castSpell()
-    {
-        Vector3 position = transform.position;
+        Vector3 position = playerController.transform.position;
         position.y += 0.8f;
 
+        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+        playerStatus.ApplyDamageReduction(barrierDamageReduction);
+
         return Instantiate(spellPrefab, position, Quaternion.identity);
+    }
+
+    public override void cancelSpell(PlayerController playerController)
+    {
+        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+        playerStatus.RemoveDamageReduction(barrierDamageReduction);
     }
 }

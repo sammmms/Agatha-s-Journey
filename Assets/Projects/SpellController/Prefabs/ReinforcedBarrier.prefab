@@ -14876,9 +14876,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 6
   spellPrefab: {fileID: 7236769584116962146}
-  spellCost: 0
+  spellCost: 9
   spellCooldown: 0
-  barrierDamageReduction: 0
+  barrierDamageReduction: 15
 --- !u!1001 &795923956403773600
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14930,6 +14930,14 @@ PrefabInstance:
     - target: {fileID: 6735300810260480193, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
       propertyPath: m_Name
       value: Barrier
+      objectReference: {fileID: 0}
+    - target: {fileID: 8653960107443426547, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
+      propertyPath: spellCost
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8653960107443426547, guid: a31ea06fdba2d1c499fdb63f950f31de, type: 3}
+      propertyPath: barrierDamageReduction
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
