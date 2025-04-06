@@ -10,6 +10,7 @@ public class SpellController : MonoBehaviour
     private SpellLocomotionInput _spellLocomotionInput;
     private PlayerState _playerState;
     private PlayerStatus _playerStatus;
+    private PlayerAnimation _playerAnimation;
     public List<Spell> hotbarSpell = new List<Spell>()
     {
         Spell.Lightweight,
@@ -57,6 +58,11 @@ public class SpellController : MonoBehaviour
     private Coroutine _consumeManaCoroutine;
     private bool _isDrainingMana = false;
 
+    private void Start()
+    {
+        _playerAnimation = GetComponent<PlayerAnimation>();
+    }
+
     private void Awake()
     {
         _spellLocomotionInput = GetComponent<SpellLocomotionInput>();
@@ -84,30 +90,9 @@ public class SpellController : MonoBehaviour
     }
 
     #region Player Inputs
-    private void HandlePlayerClick(ShootMode shootMode)
+    private void HandlePlayerClick()
     {
-        if (shootMode == ShootMode.AutoTarget)
-        {
-            HandlePlayerShoot();
-        }
-        else if (shootMode == ShootMode.ManualAim)
-        {
-            HandlePlayerAiming();
-        }
-    }
-
-    private void HandlePlayerAiming()
-    {
-        PlayerMovementState currentState = _playerState.CurrentPlayerMovementState;
-
-        if (currentState == PlayerMovementState.Aiming)
-        {
-            _playerState.SetPlayerMovementState(PlayerMovementState.Idling);
-        }
-        else
-        {
-            _playerState.SetPlayerMovementState(PlayerMovementState.Aiming);
-        }
+        HandlePlayerShoot();
     }
 
     private void HandleHotbarInput(int index)
@@ -398,10 +383,49 @@ public class SpellController : MonoBehaviour
 
     private void HandlePlayerShoot()
     {
+        List<Spell> spellToActivate = GetLaunchableSpells();
+
+        if (spellToActivate.Count > 0)
+        {
+            _playerAnimation.CastSpellAnimation();
+        }
+    }
+
+    public void LaunchAnimationTriggers()
+    {
         foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
         {
             HandleLaunchSpell(kvp.Value);
         }
+    }
+
+    private List<Spell> GetLaunchableSpells()
+    {
+        List<Spell> launchableSpells = new List<Spell>();
+
+        foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
+        {
+            BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
+
+            if (spellAttribute == null)
+            {
+                continue;
+            }
+
+            if (spellCooldown.ContainsKey(spellAttribute.spell))
+            {
+                bool canCast = spellAttribute.canCastSpell(spellCooldown[spellAttribute.spell], _playerStatus.currentManaPoint);
+
+                if (!canCast)
+                {
+                    continue;
+                }
+            }
+
+            launchableSpells.Add(spellAttribute.spell);
+        }
+
+        return launchableSpells;
     }
 
     private void HandleLaunchSpell(GameObject spellPrefab)
@@ -425,9 +449,8 @@ public class SpellController : MonoBehaviour
             }
         }
 
-        _playerStatus.TakeMana(spellAttribute.spellCost);
-
         HandleCastSpell(spellAttribute);
+        _playerStatus.TakeMana(spellAttribute.spellCost);
         spellCooldown[spell] = spellAttribute.spellCooldown;
     }
 

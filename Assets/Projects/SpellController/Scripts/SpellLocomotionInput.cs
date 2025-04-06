@@ -2,18 +2,13 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum ShootMode
-{
-    AutoTarget,
-    ManualAim
-}
 public class SpellLocomotionInput : MonoBehaviour, SpellControls.IItemInputsActions
 {
 
     public SpellControls SpellControls { get; private set; }
-    
+
     public event Action<int> OnSpellSelected;
-    public event Action<ShootMode> OnShootTriggered;
+    public event Action OnShootTriggered;
 
 
     public int SpellIndex { get; private set; }
@@ -40,12 +35,13 @@ public class SpellLocomotionInput : MonoBehaviour, SpellControls.IItemInputsActi
             // Left click - auto target
             if (context.control.name == "leftButton")
             {
-                OnShootTriggered?.Invoke(ShootMode.AutoTarget);
+                OnShootTriggered?.Invoke();
             }
-            // Right click - manual aim
+
+            // Dashing
             else if (context.control.name == "rightButton")
             {
-                OnShootTriggered?.Invoke(ShootMode.ManualAim);
+                OnShootTriggered?.Invoke();
             }
         }
     }
