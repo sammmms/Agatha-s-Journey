@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6419233856979226369}
   - component: {fileID: 1578165530206869627}
+  - component: {fileID: -5552969972642397878}
+  - component: {fileID: 2344322083006665037}
   m_Layer: 0
   m_Name: HighJump
   m_TagString: Magic Projectile
@@ -49,9 +51,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 5
   spellPrefab: {fileID: 936504878234001782}
-  spellCost: 5
+  spellCost: 12
   spellCooldown: 0
-  jumpBuffAmount: 10
+  jumpBuffAmount: 2
+--- !u!114 &-5552969972642397878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936504878234001782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d23435066b0af843a9ed71f10be1d21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 0
+  spellPrefab: {fileID: 0}
+  spellCost: 0
+  spellCooldown: 0
+  speedBuffAmount: 10
+--- !u!114 &2344322083006665037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936504878234001782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83a20abc6c5a97146ad61d7a4db907da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spell: 0
+  spellPrefab: {fileID: 0}
+  spellCost: 0
+  spellCooldown: 0
   gravityBuffAmount: 15
 --- !u!1 &3630000976912987081
 GameObject:

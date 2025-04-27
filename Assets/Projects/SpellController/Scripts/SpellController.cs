@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -8,7 +9,6 @@ public class SpellController : MonoBehaviour
 {
     [SerializeField] private SpellDatabase _spellDatabase;
     private SpellLocomotionInput _spellLocomotionInput;
-    private PlayerState _playerState;
     private PlayerStatus _playerStatus;
     private PlayerAnimation _playerAnimation;
     public List<Spell> hotbarSpell = new List<Spell>()
@@ -69,7 +69,6 @@ public class SpellController : MonoBehaviour
         _spellLocomotionInput.OnSpellSelected += HandleHotbarInput;
         _spellLocomotionInput.OnShootTriggered += HandlePlayerClick;
 
-        _playerState = GetComponent<PlayerState>();
         _playerStatus = GetComponent<PlayerStatus>();
 
 
@@ -311,35 +310,60 @@ public class SpellController : MonoBehaviour
     #region Activation Method
     private void HandleAuraActivation(GameObject spellPrefab)
     {
-        BaseSpellAttribute spellAttribute = spellPrefab.GetComponent<BaseSpellAttribute>();
+        BaseSpellAttribute[] spellAttribute = spellPrefab.GetComponents<BaseSpellAttribute>();
 
-        if (spellAttribute == null)
+        if (spellAttribute == null || spellAttribute.Length == 0)
         {
             return;
         }
 
-        GameObject instance = HandleCastSpell(spellAttribute);
+        GameObject instance = null;
 
-        activeAura.Add(spellAttribute.spell, instance);
+        foreach (AuraSpellAttribute spell in spellAttribute)
+        {
+            if (spell == null)
+            {
+                continue;
+            }
+
+            GameObject prefab = HandleCastSpell(spell);
+
+            if (prefab != null)
+            {
+                instance = prefab;
+            }
+        }
+
+        if (instance == null)
+        {
+            return;
+        }
+
+        activeAura.Add(spellAttribute[0].spell, instance);
         StartManaDrain();
     }
 
     private void HandleAuraDeactivation(GameObject spellPrefab)
     {
-        BaseSpellAttribute spellAttribute = spellPrefab.GetComponent<BaseSpellAttribute>();
+        BaseSpellAttribute[] spellAttribute = spellPrefab.GetComponents<BaseSpellAttribute>();
 
+        BaseSpellAttribute[] auraAttributes = spellAttribute.Where(attr => attr is AuraSpellAttribute).ToArray();
 
-        bool isAura = spellAttribute is AuraSpellAttribute;
-        if (!isAura)
+        BaseSpellAttribute identity = null;
+
+        foreach (AuraSpellAttribute spell in auraAttributes)
         {
-            return;
+            spell.CancelSpell(GetComponent<PlayerController>());
+
+            if (spell.spell != Spell.None)
+            {
+                identity = spell;
+            }
+
         }
 
-        Spell spell = spellAttribute.spell;
-        Destroy(activeAura[spell]);
-        activeAura.Remove(spell);
-
-        (spellAttribute as AuraSpellAttribute).cancelSpell(GetComponent<PlayerController>());
+        Destroy(activeAura[identity.spell]);
+        activeAura.Remove(identity.spell);
     }
 
     private void StartManaDrain()
@@ -458,7 +482,7 @@ public class SpellController : MonoBehaviour
     {
         PlayerController playerController = GetComponent<PlayerController>();
 
-        return spellAttribute.castSpell(playerController);
+        return spellAttribute.CastSpell(playerController);
     }
     #endregion
 }

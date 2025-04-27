@@ -33,6 +33,7 @@ public class PlayerAnimation : MonoBehaviour
 
     private void UpdateAnimationState()
     {
+        // TODO : Die Animation
         bool isGrounded = _playerState.InGroundedState();
         bool isJumping = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping;
         bool isFalling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;

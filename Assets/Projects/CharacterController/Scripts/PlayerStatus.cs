@@ -45,6 +45,9 @@ public class PlayerStatus : MonoBehaviour
     private Coroutine _regenCoroutine;
     private Coroutine _healCoroutine;
     private PlayerState _playerState;
+
+    private bool _isDead = false;
+    public bool isDead => _isDead;
     private void Start()
     {
         // Get the PlayerState component from the GameObject
@@ -58,15 +61,24 @@ public class PlayerStatus : MonoBehaviour
 
 
         // Start the regeneration process
-        initiateRegen();
+        InitiateRegen();
     }
 
     #region UI Methods
-    private void initiateRegen()
+    private void InitiateRegen()
     {
         if (_regenCoroutine == null)
         {
             _regenCoroutine = StartCoroutine(RegenStatus());
+        }
+    }
+
+    private void StopRegen()
+    {
+        if (_regenCoroutine != null)
+        {
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = null;
         }
     }
 
@@ -136,6 +148,11 @@ public class PlayerStatus : MonoBehaviour
     {
         currentHealthPoint = health;
         healthBar.SetHealth(currentHealthPoint);
+
+        if (currentHealthPoint <= 0)
+        {
+            HandleDeath();
+        }
     }
 
     public void SetMana(float mana)
@@ -208,6 +225,8 @@ public class PlayerStatus : MonoBehaviour
         SetHealth(currentHealthPoint + heal);
     }
 
+    #region Buff
+
     public void ApplyDamageBuff(float buff)
     {
         damageBuff += buff;
@@ -240,16 +259,24 @@ public class PlayerStatus : MonoBehaviour
         sprintSpeed -= speedBuff;
     }
 
-    public void ApplyJumpBuff(float jumpBuff, float gravityBuff)
+    public void ApplyJumpBuff(float jumpBuff)
     {
         jumpSpeed += jumpBuff;
-        gravity += gravityBuff;
     }
 
-    public void RemoveJumpBuff(float jumpBuff, float gravityBuff)
+    public void RemoveJumpBuff(float jumpBuff)
     {
         jumpSpeed -= jumpBuff;
+    }
+
+    public void ApplyGravityBuff(float gravityBuff)
+    {
         gravity -= gravityBuff;
+    }
+
+    public void RemoveGravityBuff(float gravityBuff)
+    {
+        gravity += gravityBuff;
     }
 
     public void ApplyHealBuff(float healBuff)
@@ -277,5 +304,15 @@ public class PlayerStatus : MonoBehaviour
             Heal(healBuff);
             yield return new WaitForSeconds(1f);
         }
+    }
+
+    #endregion
+
+    private void HandleDeath()
+    {
+        _isDead = true;
+        StopRegen();
+        // Handle player death (e.g., play animation, respawn, etc.)
+        Debug.Log("Player is dead.");
     }
 }

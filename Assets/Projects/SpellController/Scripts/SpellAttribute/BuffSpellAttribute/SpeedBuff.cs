@@ -4,20 +4,17 @@ class SpeedBuff : BuffSpellAttribute
 {
     public float speedBuffAmount;
 
-    public override GameObject castSpell(PlayerController playerController)
+    public override GameObject CastSpell(PlayerController playerController)
     {
         PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
 
         playerStatus.ApplySpeedBuff(speedBuffAmount);
 
-        Vector3 position = playerController.transform.position;
-        position.y += 0.8f;
-
-        return Instantiate(spellPrefab, position, Quaternion.identity);
+        return InstantiateSpell(playerController);
 
     }
 
-    public override void cancelSpell(PlayerController playerController)
+    public override void CancelSpell(PlayerController playerController)
     {
         PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
         playerStatus.RemoveSpeedBuff(speedBuffAmount);

@@ -12,5 +12,5 @@ public abstract class BaseSpellAttribute : MonoBehaviour
         return currentCooldown >= spellCooldown && currentMana >= spellCost;
     }
 
-    public abstract GameObject castSpell(PlayerController playerController);
+    public abstract GameObject CastSpell(PlayerController playerController);
 }

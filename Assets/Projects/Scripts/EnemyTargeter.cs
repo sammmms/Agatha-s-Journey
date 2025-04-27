@@ -35,17 +35,6 @@ public class EnemyTargeter : MonoBehaviour
             return true;
         }
 
-        for (int i = 0; i < _rayCount; i++)
-        {
-            float angle = i * (360f / _rayCount);
-            Vector3 rayDir = Quaternion.Euler(0, angle, 0) * dirToEnemy;
-
-            if (!IsObstacleBetween(transform.position, rayDir, distance))
-            {
-                return true;
-            }
-        }
-
         return false;
     }
 

@@ -3,23 +3,19 @@ using UnityEngine;
 class JumpBuff : BuffSpellAttribute
 {
     public float jumpBuffAmount;
-    public float gravityBuffAmount;
 
-    public override GameObject castSpell(PlayerController playerController)
+    public override GameObject CastSpell(PlayerController playerController)
     {
         PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
 
-        playerStatus.ApplyJumpBuff(jumpBuffAmount, gravityBuffAmount);
+        playerStatus.ApplyJumpBuff(jumpBuffAmount);
 
-        Vector3 position = playerController.transform.position;
-        position.y += 0.8f;
-
-        return Instantiate(spellPrefab, position, Quaternion.identity);
+        return InstantiateSpell(playerController);
     }
 
-    public override void cancelSpell(PlayerController playerController)
+    public override void CancelSpell(PlayerController playerController)
     {
         PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
-        playerStatus.RemoveJumpBuff(jumpBuffAmount, gravityBuffAmount);
+        playerStatus.RemoveJumpBuff(jumpBuffAmount);
     }
 }

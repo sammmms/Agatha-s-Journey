@@ -78,9 +78,22 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        HandlePlayerDeath();
+        if (_playerStatus.isDead) return;
         UpdateMovementState();
         HandleVerticalMovement();
         HandleLateralMovement();
+    }
+
+    private void HandlePlayerDeath()
+    {
+        if (_playerStatus.isDead)
+        {
+            _playerLocomotionInput.enabled = false;
+            _characterController.enabled = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     private void UpdateMovementState()

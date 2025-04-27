@@ -1,13 +1,14 @@
 using UnityEngine;
 
-class DamageBuff : BuffSpellAttribute
+class GravityBuff : BuffSpellAttribute
 {
-    public float damageBuffAmount;
+    public float gravityBuffAmount;
+
     public override GameObject CastSpell(PlayerController playerController)
     {
         PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
 
-        playerStatus.ApplyDamageBuff(damageBuffAmount);
+        playerStatus.ApplyGravityBuff(gravityBuffAmount);
 
         return InstantiateSpell(playerController);
     }
@@ -15,6 +16,6 @@ class DamageBuff : BuffSpellAttribute
     public override void CancelSpell(PlayerController playerController)
     {
         PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
-        playerStatus.RemoveDamageBuff(damageBuffAmount);
+        playerStatus.RemoveGravityBuff(gravityBuffAmount);
     }
 }
