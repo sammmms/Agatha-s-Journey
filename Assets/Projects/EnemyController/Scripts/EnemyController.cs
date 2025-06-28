@@ -29,6 +29,7 @@ public class EnemyController : MonoBehaviour
             if (TargetInRange(target))
             {
                 Attack(target);
+                return;
             }
 
             MoveTowardsTarget(target);

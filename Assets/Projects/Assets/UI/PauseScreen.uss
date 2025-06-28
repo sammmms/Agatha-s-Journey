@@ -1,0 +1,61 @@
+<engine:Style>
+        .container {
+            flex-grow: 1;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(35, 37, 38, 0.7);
+        }
+        .pause-screen {
+            width: 400px;
+            padding: 30px;
+        }
+        .title {
+            font-size: 36px;
+            -unity-font-style: bold;
+            color: rgb(255, 214, 0);
+            -unity-text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+        .button-container {
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .pause-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            border-width: 0;
+            margin-left: 10px;
+            margin-right: 10px;
+            transition-duration: 0.1s;
+            background-image: none;
+            -unity-background-scale-mode: scale-to-fit;
+        }
+        .pause-button:hover {
+            scale: 1.1 1.1;
+        }
+        .exit-button {
+            background-color: rgb(255, 214, 0);
+        }
+        .exit-button:hover {
+            background-color: rgb(255, 234, 0);
+        }
+        .resume-button {
+            background-color: rgb(220, 53, 69);
+            border-radius: 60px;
+            width: 120px;
+            height: 120px;
+        }
+        .resume-button:hover {
+            background-color: rgb(240, 73, 89);
+        }
+        .restart-button {
+            background-color: rgb(255, 214, 0);
+        }
+        .restart-button:hover {
+            background-color: rgb(255, 234, 0);
+        }
+    </engine:Style>

@@ -420,6 +420,7 @@ GameObject:
   - component: {fileID: 8559361512132217286}
   - component: {fileID: 5731079845604226774}
   - component: {fileID: 8752179994786520836}
+  - component: {fileID: 2669623274175301419}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Player
@@ -608,6 +609,7 @@ MonoBehaviour:
   healthRegenRate: 1
   manaRegenRate: 1
   staminaRegenRate: 1
+  regenRate: 1
   damageReduction: 0
   damageBuff: 0
   healBuff: 0
@@ -657,6 +659,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a3b5700bcf32e040a9b48fcd96f5255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2669623274175301419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073584302107045668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dd7c3a485678b24bab1a169de5f8c38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectionRadius: 10
+  _enemyTag: Enemies
+  _obstacleTag: Ground
+  _rayCount: 8
 --- !u!1 &1275243159685832719
 GameObject:
   m_ObjectHideFlags: 0

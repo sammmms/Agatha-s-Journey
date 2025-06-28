@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
         HandlePlayerDeath();
         if (_playerStatus.isDead) return;
         UpdateMovementState();
@@ -194,7 +195,8 @@ public class PlayerController : MonoBehaviour
             Vector3 movementDelta = currentAcceleration * Time.deltaTime * movementDirection;
             _horizontalVelocity += movementDelta;
 
-            Vector3 currentDrag = _horizontalVelocity.normalized * drag * Time.deltaTime;
+
+            Vector3 currentDrag = drag * Time.deltaTime * _horizontalVelocity.normalized;
 
             // Apply drag only when grounded
             if (_horizontalVelocity.magnitude > drag * Time.deltaTime)
@@ -287,7 +289,7 @@ public class PlayerController : MonoBehaviour
         Vector3 lateralVelocity = new Vector3(
             _characterController.velocity.x,
             0,
-            _characterController.velocity.y
+            _characterController.velocity.z
         );
         return lateralVelocity.magnitude > movingThreshold;
     }

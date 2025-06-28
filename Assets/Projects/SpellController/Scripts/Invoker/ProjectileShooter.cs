@@ -5,14 +5,23 @@ public class ProjectileShooter : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private Camera _camera;
-    [SerializeField] private EnemyTargeter _enemyTargeter;
 
     [Header("Projectile Settings")]
     [SerializeField] private Transform _projectileSpawnPoint;
     [SerializeField] private float _projectileSpeed = 10f;
     [SerializeField] private float _arcHeight = 2f; // Peak height of arc
+    private EnemyTargeter _enemyTargeter;
     private Vector3 _destination;
 
+
+    private void Awake()
+    {
+        _enemyTargeter = GetComponent<EnemyTargeter>();
+        if (_camera == null)
+        {
+            _camera = Camera.main;
+        }
+    }
     public void LaunchProjectile(GameObject prefabProjectile)
     {
         Vector3 cameraForward = _camera.transform.forward;

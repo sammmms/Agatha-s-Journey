@@ -419,8 +419,7 @@ public class SpellController : MonoBehaviour
     {
         foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
         {
-            HandleLaunchSpell(kvp.Value);
-        }
+            HandleLaunchSpell(kvp.Value);        }
     }
 
     private List<Spell> GetLaunchableSpells()

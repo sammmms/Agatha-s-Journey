@@ -1,0 +1,12 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Projects/Assets/UI/PauseScreen.uss?fileID=7433441132597879392&amp;guid=2c12d37b3db024c14bcae14ac06e06ac&amp;type=3#PauseScreen" />
+    <engine:VisualElement class="container" style="align-items: center; height: 1080px; justify-content: center;">
+        <engine:VisualElement class="pause-screen">
+            <engine:VisualElement class="button-container">
+                <engine:Button name="exitButton" class="pause-button exit-button" />
+                <engine:Button name="resumeButton" class="pause-button resume-button" />
+                <engine:Button name="restartButton" class="pause-button restart-button" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>
