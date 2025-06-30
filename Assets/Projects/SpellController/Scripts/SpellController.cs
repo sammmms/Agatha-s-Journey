@@ -417,9 +417,12 @@ public class SpellController : MonoBehaviour
 
     public void LaunchAnimationTriggers()
     {
+        Debug.Log("Launch Animation Triggers");
+        Debug.Log("Shootable Projectiles Count: " + shootableProjectiles.Count);
         foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
         {
-            HandleLaunchSpell(kvp.Value);        }
+            HandleLaunchSpell(kvp.Value);
+        }
     }
 
     private List<Spell> GetLaunchableSpells()
@@ -453,9 +456,8 @@ public class SpellController : MonoBehaviour
 
     private void HandleLaunchSpell(GameObject spellPrefab)
     {
-        BaseSpellAttribute spellAttribute = spellPrefab.GetComponent<BaseSpellAttribute>();
 
-        if (spellAttribute == null)
+        if (!spellPrefab.TryGetComponent<BaseSpellAttribute>(out var spellAttribute))
         {
             return;
         }

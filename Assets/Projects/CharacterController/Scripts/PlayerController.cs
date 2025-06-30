@@ -130,28 +130,18 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded && _verticalVelocity < 0)
         {
-            _verticalVelocity = 0f;
-        }
+            _verticalVelocity = -2f;
 
-        _verticalVelocity -= Gravity * Time.deltaTime;
+            _wasSprintingWhenJumped = false;
+        }
 
         if (isGrounded && _playerLocomotionInput.JumpPressed)
         {
-
             _wasSprintingWhenJumped = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-
-            _verticalVelocity += Mathf.Sqrt(JumpSpeed * 3 * Gravity);
-
-
+            _verticalVelocity = Mathf.Sqrt(JumpSpeed * 2f * Gravity); // Corrected jump formula
         }
 
-
-        _horizontalVelocity = new Vector3(
-        _characterController.velocity.x,
-        0,
-        _characterController.velocity.z
-    );
-
+        _verticalVelocity -= Gravity * Time.deltaTime;
     }
 
     private void HandleLateralMovement()
@@ -159,87 +149,45 @@ public class PlayerController : MonoBehaviour
         bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
         bool isGrounded = _playerState.InGroundedState();
 
+        // --- MODIFIED SPEED LOGIC ---
+        // We should maintain sprint speed if we are currently sprinting OR if we are in the air
+        // and the jump was initiated from a sprint.
+        bool maintainSprintSpeed = isSprinting || (!isGrounded && _wasSprintingWhenJumped);
+        float currentSpeed = maintainSprintSpeed ? SprintSpeed : RunSpeed;
+        // --- END OF MODIFICATION ---
 
-        float currentAcceleration =
-        isGrounded ?
-        (isSprinting ? sprintAcceleration : runAcceleration) : runAcceleration * 0.3f;
-        float currentSpeed =
-        isSprinting ? SprintSpeed : RunSpeed;
-
-        if (isSprinting)
+        if (isSprinting && isGrounded)
         {
             HandleConsumeStamina();
         }
 
+        Vector3 cameraForwardXZ = Vector3.Scale(_playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+        Vector3 cameraRightXZ = Vector3.Scale(_playerCamera.transform.right, new Vector3(1, 0, 1)).normalized;
+        Vector3 movementDirection = (cameraRightXZ * _playerLocomotionInput.MovementInput.x +
+                                     cameraForwardXZ * _playerLocomotionInput.MovementInput.y);
 
-
-        Vector3 cameraForwardXZ = new Vector3(
-            _playerCamera.transform.forward.x,
-            0,
-            _playerCamera.transform.forward.z
-        ).normalized;
-
-        Vector3 cameraRightXZ = new Vector3(
-            _playerCamera.transform.right.x,
-            0,
-            _playerCamera.transform.right.z
-        ).normalized;
-
-        Vector3 movementDirection =
-            cameraRightXZ * _playerLocomotionInput.MovementInput.x +
-            cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
-
-
-        if (isGrounded)
+        if (movementDirection.magnitude > 0.01f)
         {
-            Vector3 movementDelta = currentAcceleration * Time.deltaTime * movementDirection;
-            _horizontalVelocity += movementDelta;
+            // Use a ternary for acceleration as well, makes it cleaner
+            float currentAcceleration = isGrounded ? (maintainSprintSpeed ? sprintAcceleration : runAcceleration) : runAcceleration * 0.5f;
 
-
-            Vector3 currentDrag = drag * Time.deltaTime * _horizontalVelocity.normalized;
-
-            // Apply drag only when grounded
-            if (_horizontalVelocity.magnitude > drag * Time.deltaTime)
-            {
-                _horizontalVelocity -= currentDrag;
-            }
-            else
-            {
-                _horizontalVelocity = Vector3.zero;
-            }
+            _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, movementDirection.normalized * currentSpeed, currentAcceleration * Time.deltaTime);
+        }
+        else if (isGrounded)
+        {
+            _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, Vector3.zero, drag * Time.deltaTime);
         }
 
-
-        Vector3 finalVelocity;
-        if (!isGrounded && _wasSprintingWhenJumped)
-        {
-            if (_horizontalVelocity.magnitude < SprintSpeed)
-            {
-                _horizontalVelocity = _horizontalVelocity.normalized * SprintSpeed;
-            }
-
-            finalVelocity = Vector3.ClampMagnitude(_horizontalVelocity, SprintSpeed);
-        }
-        else
-        {
-            finalVelocity = Vector3.ClampMagnitude(_horizontalVelocity, currentSpeed);
-        }
-
+        Vector3 finalVelocity = _horizontalVelocity;
         finalVelocity.y = _verticalVelocity;
-
-
 
         _characterController.Move(finalVelocity * Time.deltaTime);
     }
 
 
-
     private void HandleConsumeStamina()
     {
-        if (sprintCoroutine == null)
-        {
-            sprintCoroutine = StartCoroutine(nameof(ConsumeStamina));
-        }
+        sprintCoroutine ??= StartCoroutine(nameof(ConsumeStamina));
     }
 
     private IEnumerator ConsumeStamina()
