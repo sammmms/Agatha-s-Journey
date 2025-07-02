@@ -45,6 +45,18 @@ public enum Spell
 [CreateAssetMenu(fileName = "SpellDatabase", menuName = "Spells/Spell Database")]
 public class SpellDatabase : ScriptableObject
 {
+    [Header("Spell Data")]
+    private List<Spell> _basicSpells = new List<Spell>
+    {
+        Spell.Lightweight,
+        Spell.Barrier,
+        Spell.Enhance,
+        Spell.Heal,
+        Spell.Bolt,
+        Spell.Flare,
+        Spell.Arrow
+    };
+
     [System.Serializable]
     public struct SpellData
     {
@@ -65,5 +77,23 @@ public class SpellDatabase : ScriptableObject
         }
 
         return null;
+    }
+
+    public List<GameObject> GetAllBasicSpellsPrefab()
+    {
+        List<GameObject> basicSpellPrefabs = new List<GameObject>();
+        foreach (var spell in _basicSpells)
+        {
+            GameObject prefab = GetSpellPrefab(spell);
+            if (prefab != null)
+            {
+                basicSpellPrefabs.Add(prefab);
+            }
+            else
+            {
+                Debug.LogWarning($"No prefab found for spell: {spell}");
+            }
+        }
+        return basicSpellPrefabs;
     }
 }

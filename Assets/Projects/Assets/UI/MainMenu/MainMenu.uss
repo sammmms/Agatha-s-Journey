@@ -1,5 +1,3 @@
-
-/* Container styles for positioning the buttons */
 .main-container {
     flex-grow: 1;
     justify-content: flex-end;
@@ -12,31 +10,19 @@
     align-items: flex-end;
 }
 
-/* --- Styled Menu Button --- */
-
 .menu-button {
-    /* Core Appearance */
     background-color: transparent;
-    color: #7F7F7F;
-    font-size: 18px;
+    color: rgb(127, 127, 127);
     -unity-font-style: bold;
-    
-    /* Sizing and Layout */
     padding: 12px 24px;
-
-    /* Border and Decoration */
     border-width: 0;
     border-radius: 6px;
-
 }
 
-/* Hover State for the Menu Button */
 .menu-button:hover {
-    color: #D0D0D0;
-
+    color: rgb(208, 208, 208);
 }
 
-/* Spacing for the start button */
 .start-button {
     margin-bottom: 10px;
 }

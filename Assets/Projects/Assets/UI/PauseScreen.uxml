@@ -1,11 +1,13 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Projects/Assets/UI/PauseScreen.uss?fileID=7433441132597879392&amp;guid=2c12d37b3db024c14bcae14ac06e06ac&amp;type=3#PauseScreen" />
     <engine:VisualElement class="container" style="align-items: center; height: 1080px; justify-content: center;">
-        <engine:VisualElement class="pause-screen">
-            <engine:VisualElement class="button-container">
-                <engine:Button name="exitButton" class="pause-button exit-button" />
-                <engine:Button name="resumeButton" class="pause-button resume-button" />
-                <engine:Button name="restartButton" class="pause-button restart-button" />
+        <engine:VisualElement class="pause-screen" style="width: 100%;">
+            <engine:VisualElement name="VisualElement" class="button-container" style="margin-top: 0;">
+                <engine:Button name="exitButton" class="pause-button exit-button" style="background-image: url(&quot;project://database/Assets/GUI_Parts/Gui_parts/button_cancel.png?fileID=2800000&amp;guid=f9619563aba8b7542abf0aabdc638afe&amp;type=3#button_cancel&quot;);" />
+                <engine:Button name="resumeButton" class="pause-button resume-button">
+                    <engine:VisualElement style="flex-grow: 1; background-image: url(&quot;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1087164816274819069&amp;guid=3fa1c97bdd8e54b55ad112f1e6de23bc&amp;type=3#arrow-right@2x&quot;); -unity-background-image-tint-color: rgb(151, 121, 104); background-position-x: center 0; background-position-y: center 0;" />
+                </engine:Button>
+                <engine:Button name="equipmentButton" class="pause-button restart-button" style="background-image: url(&quot;project://database/Assets/GUI_Parts/Gui_parts/lil_roundframe_ready2.png?fileID=2800000&amp;guid=f507f03eb80bcbf49bb458bd6a54bd9a&amp;type=3#lil_roundframe_ready2&quot;); background-color: rgb(178, 129, 117);" />
             </engine:VisualElement>
         </engine:VisualElement>
     </engine:VisualElement>

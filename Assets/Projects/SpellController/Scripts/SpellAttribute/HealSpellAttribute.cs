@@ -5,18 +5,15 @@ public class HealSpellAttribute : AuraSpellAttribute
     public float healAmount;
 
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+        PlayerStatus.ApplyHealBuff(healAmount);
 
-        playerStatus.ApplyHealBuff(healAmount);
-
-        return Instantiate(spellPrefab, playerController.transform.position, Quaternion.identity);
+        return Instantiate(spellPrefab, CasterPosition, Quaternion.identity);
     }
 
     public override void CancelSpell(PlayerController playerController)
     {
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
-        playerStatus.RemoveHealBuff(healAmount);
+        PlayerStatus.RemoveHealBuff(healAmount);
     }
 }

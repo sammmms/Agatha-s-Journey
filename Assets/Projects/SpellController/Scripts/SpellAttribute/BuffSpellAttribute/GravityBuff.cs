@@ -4,13 +4,11 @@ class GravityBuff : BuffSpellAttribute
 {
     public float gravityBuffAmount;
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+        PlayerStatus.ApplyGravityBuff(gravityBuffAmount);
 
-        playerStatus.ApplyGravityBuff(gravityBuffAmount);
-
-        return InstantiateSpell(playerController);
+        return InstantiateSpell();
     }
 
     public override void CancelSpell(PlayerController playerController)

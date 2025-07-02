@@ -7,11 +7,12 @@ public class ProjectileSpellAttribute : BaseSpellAttribute
     public float stunDuration;
     public float stunPerInstance;
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
-        ProjectileShooter projectileShooter = playerController.GetComponent<ProjectileShooter>();
-
-        projectileShooter.LaunchProjectile(spellPrefab);
+        if (spellCaster.TryGetComponent<ProjectileShooter>(out var projectileShooter))
+        {
+            projectileShooter.LaunchProjectile(spellPrefab);
+        }
 
         return null;
     }

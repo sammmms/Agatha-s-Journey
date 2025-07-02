@@ -4859,6 +4859,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 12
   spellPrefab: {fileID: 470367661892998335}
+  spellSound: {fileID: 8300000, guid: 6336d676c65954269abcc4e5fef411d3, type: 3}
   spellCost: 10
   spellCooldown: 0
   healAmount: 15

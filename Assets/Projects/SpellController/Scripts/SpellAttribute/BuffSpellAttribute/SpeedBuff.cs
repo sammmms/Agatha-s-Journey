@@ -4,13 +4,11 @@ class SpeedBuff : BuffSpellAttribute
 {
     public float speedBuffAmount;
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
+        PlayerStatus.ApplySpeedBuff(speedBuffAmount);
 
-        playerStatus.ApplySpeedBuff(speedBuffAmount);
-
-        return InstantiateSpell(playerController);
+        return InstantiateSpell();
 
     }
 

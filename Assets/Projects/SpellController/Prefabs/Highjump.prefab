@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 5
   spellPrefab: {fileID: 936504878234001782}
+  spellSound: {fileID: 8300000, guid: d1cee78535fe44048b881a864477d033, type: 3}
   spellCost: 12
   spellCooldown: 0
   jumpBuffAmount: 2
@@ -68,6 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 0
   spellPrefab: {fileID: 0}
+  spellSound: {fileID: 0}
   spellCost: 0
   spellCooldown: 0
   speedBuffAmount: 10
@@ -85,6 +87,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 0
   spellPrefab: {fileID: 0}
+  spellSound: {fileID: 0}
   spellCost: 0
   spellCooldown: 0
   gravityBuffAmount: 15

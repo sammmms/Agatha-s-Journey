@@ -124,6 +124,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 2
   spellPrefab: {fileID: 6735300810260480193}
+  spellSound: {fileID: 8300000, guid: 640dc6ecac18f45c1b30fce6a4321ff3, type: 3}
+  spellIcon: {fileID: 21300000, guid: c46d83f2b73aaa141bd5015819342d81, type: 3}
   spellCost: 5
   spellCooldown: 0
   barrierDamageReduction: 7

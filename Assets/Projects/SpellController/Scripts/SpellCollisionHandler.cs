@@ -11,7 +11,6 @@ public class SpellCollisionHandler : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-
         if (collision.gameObject.CompareTag("Enemies"))
         {
             HandleEnemyCollision(collision);

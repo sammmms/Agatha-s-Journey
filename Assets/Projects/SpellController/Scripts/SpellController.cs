@@ -440,7 +440,7 @@ public class SpellController : MonoBehaviour
 
             if (spellCooldown.ContainsKey(spellAttribute.spell))
             {
-                bool canCast = spellAttribute.canCastSpell(spellCooldown[spellAttribute.spell], _playerStatus.currentManaPoint);
+                bool canCast = spellAttribute.CanCastSpell(spellCooldown[spellAttribute.spell], _playerStatus.currentManaPoint);
 
                 if (!canCast)
                 {
@@ -466,7 +466,7 @@ public class SpellController : MonoBehaviour
 
         if (spellCooldown.ContainsKey(spell))
         {
-            bool canCast = spellAttribute.canCastSpell(spellCooldown[spell], _playerStatus.currentManaPoint);
+            bool canCast = spellAttribute.CanCastSpell(spellCooldown[spell], _playerStatus.currentManaPoint);
 
             if (!canCast)
             {
@@ -481,9 +481,7 @@ public class SpellController : MonoBehaviour
 
     private GameObject HandleCastSpell(BaseSpellAttribute spellAttribute)
     {
-        PlayerController playerController = GetComponent<PlayerController>();
-
-        return spellAttribute.CastSpell(playerController);
+        return spellAttribute.CastSpell(gameObject);
     }
     #endregion
 }

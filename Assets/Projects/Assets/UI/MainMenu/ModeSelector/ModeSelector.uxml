@@ -1,0 +1,17 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Projects/Assets/UI/MainMenu/ModeSelector/MenuSelection.uss?fileID=7433441132597879392&amp;guid=27d1c899739544b2e9e32e42bbe4b361&amp;type=3#MenuSelection" />
+    <engine:VisualElement name="ScreenBackground" style="flex-grow: 1; justify-content: center; align-items: center; background-color: rgba(0, 0, 0, 0.94); max-width: 100%; background-image: none;">
+        <engine:VisualElement name="MenuContainer" style="flex-direction: row; justify-content: center; align-items: stretch; background-color: rgb(45, 55, 45); border-color: rgb(180, 180, 180); border-width: 2px; border-radius: 15px; padding: 20px; width: 1000px; max-width: none; height: 700px; background-size: 10% 100%; align-content: flex-start; opacity: 1; min-width: 300px; max-height: none; min-height: 200px;">
+            <engine:VisualElement name="LeftSelection" class="selection" style="flex-direction: column; align-items: center; border-radius: 10px; margin: 10px; padding: 15px; width: 48%; max-width: 400px; min-width: 300px; margin-right: 0; opacity: 1; margin-top: 0; margin-bottom: 0; margin-left: 0;">
+                <engine:VisualElement name="Image" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Projects/Assets/Images/Boss%20Practice%20Images.png?fileID=2800000&amp;guid=ee45ff2c6684b446999eaf3aeceefa09&amp;type=3#Boss Practice Images&quot;); max-width: none; width: 100%; margin-bottom: 20px;" />
+                <engine:Label text="Play Story Mode" name="Title" style="font-size: 35%; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: middle-center; margin-bottom: 5px;" />
+                <engine:Label text="Hone your skills against tough foes." name="Subtitle" style="font-size: 25%; color: rgb(200, 200, 200); -unity-text-align: middle-center; -unity-white-space: normal;" />
+            </engine:VisualElement>
+            <engine:VisualElement name="RightSelection" class="selection" style="flex-direction: column; align-items: center; border-radius: 10px; margin: 10px; padding: 15px; width: 48%; max-width: 400px; min-width: 300px; margin-left: 10px; font-size: 25px; margin-top: 10px; margin-right: 10px; margin-bottom: 10px;">
+                <engine:VisualElement name="Image" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Projects/Assets/Images/Boss%20Practice%20Images.png?fileID=2800000&amp;guid=ee45ff2c6684b446999eaf3aeceefa09&amp;type=3#Boss Practice Images&quot;); max-width: none; width: 100%; margin-bottom: 20px;" />
+                <engine:Label text="Practice with Boss&#10;" name="Title" style="font-size: 35px; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: middle-center; margin-bottom: 5px; max-width: 500px; flex-wrap: nowrap;" />
+                <engine:Label text="Train your agility with boss." name="Subtitle" style="font-size: 25%; color: rgb(200, 200, 200); -unity-text-align: middle-center; -unity-white-space: normal;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

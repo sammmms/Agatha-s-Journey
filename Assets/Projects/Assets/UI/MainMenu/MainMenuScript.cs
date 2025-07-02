@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuScript : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
-    [SerializeField] private GameObject clickParticlePrefab;
+    [SerializeField] private UIDocument menuSelectorDocument;
 
     void Start()
     {
@@ -33,7 +33,7 @@ public class MainMenuScript : MonoBehaviour
 
     private void OnStartButtonClicked()
     {
-        SceneManager.LoadScene("GameScene");
+        menuSelectorDocument.gameObject.SetActive(true);
     }
 
     private void OnQuitButtonClicked()

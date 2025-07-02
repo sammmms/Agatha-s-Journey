@@ -78,7 +78,7 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Time: 0.15
-  m_PreviewTimeScale: 0.1
+  m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.5
@@ -5041,6 +5041,8 @@ GameObject:
   - component: {fileID: 5480304476448205484}
   - component: {fileID: 2500755022870505109}
   - component: {fileID: 3153134284526719655}
+  - component: {fileID: -9071345793536586922}
+  - component: {fileID: 2790183663720729042}
   m_Layer: 0
   m_Name: Bolt
   m_TagString: Magic Projectile
@@ -5107,12 +5109,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 16
   spellPrefab: {fileID: 5182280641448971461}
+  spellSound: {fileID: 8300000, guid: 836465cb1713f4b6aa322b22952baa1c, type: 3}
+  spellIcon: {fileID: 21300000, guid: 21df9195ed43b004394e6d7913b03149, type: 3}
   spellCost: 7
   spellCooldown: 4
   spellSpeed: 10
   spellDamage: 5
   stunDuration: 1
   stunPerInstance: 0
+--- !u!114 &-9071345793536586922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5182280641448971461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 872df68f039c2694285e6b1df988ccd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &2790183663720729042
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5182280641448971461}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.27
+  m_Center: {x: -0.04, y: 0.02, z: -0.48}
 --- !u!1 &5386811135688203803
 GameObject:
   m_ObjectHideFlags: 0

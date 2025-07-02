@@ -2,8 +2,8 @@
     <Style src="project://database/Assets/Projects/Assets/UI/MainMenu/MainMenu.uss?fileID=7433441132597879392&amp;guid=12a6198fab19a4b9bbaa6ed7ff926a3a&amp;type=3#MainMenu" />
     <engine:VisualElement class="main-container">
         <engine:VisualElement class="button-container">
-            <engine:Button text="Start" name="start-button" class="menu-button start-button" />
-            <engine:Button text="Quit" name="quit-button" class="menu-button" />
+            <engine:Button text="Start" name="start-button" selectable="true" class="menu-button start-button" style="height: auto; width: auto; font-size: 96%; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px;" />
+            <engine:Button text="Quit" name="quit-button" class="menu-button" style="height: auto; width: auto; font-size: 72%; margin-top: 20px; margin-right: 20px; margin-bottom: 20px; margin-left: 20px;" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5536072886326934768}
   - component: {fileID: 9060808613574024068}
+  - component: {fileID: 2464690149213499387}
+  - component: {fileID: 8599732051072727162}
   m_Layer: 5
   m_Name: MainMenuUIGameObject
   m_TagString: Untagged
@@ -51,3 +53,30 @@ MonoBehaviour:
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
+--- !u!114 &2464690149213499387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315599829232453272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a77808752f64246d8b3822e4c92aba59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDoc: {fileID: 9060808613574024068}
+--- !u!114 &8599732051072727162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315599829232453272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d359555cab3644c6955ebdf686b5d5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 9060808613574024068}
+  menuSelectorDocument: {fileID: 0}

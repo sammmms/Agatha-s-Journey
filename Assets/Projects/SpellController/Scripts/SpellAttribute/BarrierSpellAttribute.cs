@@ -4,15 +4,11 @@ public class BarrierSpellAttribute : AuraSpellAttribute
 {
     public float barrierDamageReduction;
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
-        Vector3 position = playerController.transform.position;
-        position.y += 0.8f;
+        PlayerStatus.ApplyDamageReduction(barrierDamageReduction);
 
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
-        playerStatus.ApplyDamageReduction(barrierDamageReduction);
-
-        return InstantiateSpell(playerController);
+        return InstantiateSpell();
     }
 
     public override void CancelSpell(PlayerController playerController)

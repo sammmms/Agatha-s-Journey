@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Projects/Assets/UI/Hotbar/HotbarUSS.uss?fileID=7433441132597879392&amp;guid=5a94a8f19647144a6840dfe31e2fe1f0&amp;type=3#HotbarUSS" />
+    <engine:VisualElement name="Background" style="flex-grow: 1; flex-direction: row; margin-bottom: 0; margin-left: 0;">
+        <engine:VisualElement name="HotbarBackground" class="hotbar_background" style="flex-grow: initial; width: auto; height: auto; flex-direction: row; align-self: flex-start; align-items: center; justify-content: flex-start; color: rgba(27, 27, 27, 0);">
+            <engine:VisualElement name="HotbarItems_1" class="hotbar_items" style="margin-left: 8px;" />
+            <engine:VisualElement name="HotbarItems_2" class="hotbar_items" />
+            <engine:VisualElement name="HotbarItems_3" class="hotbar_items" />
+            <engine:VisualElement name="HotbarItems_4" class="hotbar_items" style="margin-right: 8px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

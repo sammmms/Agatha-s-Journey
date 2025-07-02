@@ -6,7 +6,7 @@ public class DamageOverTimeSpellAttribute : BaseSpellAttribute
     public float dotDuration;
     public float dotTick;
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
         throw new System.NotImplementedException();
     }

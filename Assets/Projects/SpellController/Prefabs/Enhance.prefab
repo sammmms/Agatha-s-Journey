@@ -4851,6 +4851,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 4
   spellPrefab: {fileID: 950369842493697681}
+  spellSound: {fileID: 8300000, guid: 6802f5bf5e4a74d438f251a0017cbc9c, type: 3}
+  spellIcon: {fileID: 21300000, guid: 0f182fb2863faa7449e020de33b77e68, type: 3}
   spellCost: 5
   spellCooldown: 0
   damageBuffAmount: 5

@@ -8,11 +8,9 @@ public class AreaOfEffectSpellAttribute : BaseSpellAttribute
     public float impactStun;
     public float spellDuration;
 
-    public override GameObject CastSpell(PlayerController playerController)
+    protected override GameObject TriggerSpell()
     {
-        AOEInvoker aoeInvoker = playerController.GetComponent<AOEInvoker>();
-
-        if (aoeInvoker != null)
+        if (spellCaster.TryGetComponent(out AOEInvoker aoeInvoker))
         {
             aoeInvoker.CastAOESpell(spellPrefab);
             return spellPrefab;
