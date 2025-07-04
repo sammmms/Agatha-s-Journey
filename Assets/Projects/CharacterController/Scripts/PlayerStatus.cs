@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerStatus : MonoBehaviour
 {
+    [Header("Sound Related")]
+    [SerializeField] public AudioClip damageSound;
+    [SerializeField] public AudioClip deathSound;
+
     [Header("UI")]
     [SerializeField] public HealthBar healthBar;
     [SerializeField] public ManaBar manaBarPrefab;
@@ -45,13 +49,16 @@ public class PlayerStatus : MonoBehaviour
     private Coroutine _regenCoroutine;
     private Coroutine _healCoroutine;
     private PlayerState _playerState;
+    private PlayerAnimation _playerAnimation;
 
     private bool _isDead = false;
-    public bool isDead => _isDead;
+    public bool IsDead => _isDead;
     private void Start()
     {
         // Get the PlayerState component from the GameObject
         _playerState = GetComponent<PlayerState>();
+        // Get the PlayerAnimation component from the GameObject
+        _playerAnimation = GetComponent<PlayerAnimation>();
 
         // Initialize health, mana, and stamina to their maximum values
         SetMaxHealth(maxHealthPoint);
@@ -177,7 +184,20 @@ public class PlayerStatus : MonoBehaviour
             damage = 0;
         }
 
+        if (damage <= 0 || currentHealthPoint <= 0)
+        {
+            return;
+        }
+
+        // Play damage sound if assigned
+        if (damageSound != null)
+        {
+            AudioSource.PlayClipAtPoint(damageSound, transform.position);
+        }
+
+
         SetHealth(currentHealthPoint - damage);
+        _playerAnimation.PlayHitAnimation();
     }
 
     public void TakeMana(float mana)
@@ -313,6 +333,11 @@ public class PlayerStatus : MonoBehaviour
         _isDead = true;
         StopRegen();
         // Handle player death (e.g., play animation, respawn, etc.)
-        Debug.Log("Player is dead.");
+        if (deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(deathSound, transform.position);
+        }
+        _playerAnimation.PlayDeathAnimation();
+
     }
 }

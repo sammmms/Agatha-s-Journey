@@ -1,0 +1,25 @@
+.button:hover {
+    color: rgb(79, 79, 79);
+}
+
+.button {
+    background-color: rgba(255, 255, 255, 0);
+    padding-top: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    margin-top: 32px;
+    margin-right: 64px;
+    margin-bottom: 32px;
+    margin-left: 64px;
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Examples%20&%20Extras/Fonts/Anton.ttf?fileID=12800000&guid=997a43b767814dd0a7642ec9b78cba41&type=3#Anton");
+    font-size: 40px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    -unity-font-style: normal;
+    letter-spacing: 8px;
+    color: rgb(144, 144, 144);
+    text-shadow: 2px 2px 20px rgb(0, 0, 0);
+}

@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
     {
 
         HandlePlayerDeath();
-        if (_playerStatus.isDead) return;
+        if (_playerStatus.IsDead) return;
         UpdateMovementState();
         HandleVerticalMovement();
         HandleLateralMovement();
@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePlayerDeath()
     {
-        if (_playerStatus.isDead)
+        if (_playerStatus.IsDead)
         {
             _playerLocomotionInput.enabled = false;
             _characterController.enabled = false;

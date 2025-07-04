@@ -50,7 +50,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: f360ebe6d4f7e4b168d10cf132a94a9c, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: dd2aa060a3bd14bfbb0c401c369f2ea8, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
@@ -67,6 +67,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenuUI: {fileID: 8718840258142513863}
+  inventoryMenuUI: {fileID: 0}
+  pauseSound: {fileID: 8300000, guid: b83bf8726a7fac349a54389f0c57cda6, type: 3}
+  resumeSound: {fileID: 8300000, guid: e58d8bd078f188a4ba314e933b98528b, type: 3}
 --- !u!114 &7525341406408987546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,8 +84,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiDoc: {fileID: 8718840258142513863}
   audioSource: {fileID: 5538619839478186650}
+  hoverSound: {fileID: 0}
   classNames:
-  - menu-button
+  - pause-button
 --- !u!82 &5538619839478186650
 AudioSource:
   m_ObjectHideFlags: 0
@@ -95,7 +99,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
   m_Resource: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

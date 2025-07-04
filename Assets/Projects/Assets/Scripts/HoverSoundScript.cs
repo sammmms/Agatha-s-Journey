@@ -7,6 +7,7 @@ public class HoverSoundScript : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDoc;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip hoverSound;
     [SerializeField] private List<string> classNames = new List<string> { "menu-button" };
 
     void Start()
@@ -22,6 +23,11 @@ public class HoverSoundScript : MonoBehaviour
                 {
                     if (audioSource != null)
                     {
+                        if (hoverSound != null)
+                        {
+                            audioSource.clip = hoverSound;
+                        }
+
                         audioSource.Play();
                     }
                 });

@@ -65,4 +65,14 @@ public class PlayerAnimation : MonoBehaviour
     {
         _animator.SetTrigger("isCasting");
     }
+
+    public void PlayHitAnimation()
+    {
+        _animator.SetTrigger("isHit");
+    }
+
+    public void PlayDeathAnimation()
+    {
+        _animator.SetTrigger("isDead");
+    }
 }

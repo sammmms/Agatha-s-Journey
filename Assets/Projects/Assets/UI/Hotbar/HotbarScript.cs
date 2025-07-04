@@ -10,6 +10,7 @@ public class HotbarScript : MonoBehaviour
     public int maxSpells = 4;
 
     private List<Spell> currentHotbarSpells = new List<Spell>();
+
     private VisualElement[] hotbarItems = new VisualElement[4];
 
     void Awake()
@@ -32,6 +33,7 @@ public class HotbarScript : MonoBehaviour
             currentHotbarSpells.Add(Spell.None);
             hotbarItems[i] = root.Q<VisualElement>($"HotbarItems_{i + 1}");
         }
+
     }
 
     void Update()
@@ -62,22 +64,25 @@ public class HotbarScript : MonoBehaviour
 
         if (spell == Spell.None)
         {
-            hotbarItems[slot].style.backgroundImage = null;
             return;
         }
 
         GameObject spellPrefab = spellDatabase.GetSpellPrefab(spell);
         if (spellPrefab != null)
         {
-            spellPrefab.TryGetComponent(out BaseSpellAttribute spellAttribute);
-            if (spellAttribute != null)
+            if (spellPrefab.TryGetComponent(out BaseSpellAttribute spellAttribute) && spellAttribute.spellIcon != null)
             {
-                hotbarItems[slot].style.backgroundImage = spellAttribute.spellIcon.texture;
-                hotbarItems[slot].tooltip = spellAttribute.spell.ToString();
+                var iconElement = new VisualElement();
+                iconElement.AddToClassList("hotbar_item");
+                iconElement.style.backgroundImage = spellAttribute.spellIcon.texture;
+                iconElement.tooltip = spellAttribute.spell.ToString();
+
+                Debug.Log($"Adding spell {spell} to hotbar slot {slot} with icon {spellAttribute.spellIcon.name}");
+                hotbarItems[slot].Add(iconElement);
             }
             else
             {
-                Debug.LogWarning($"Spell {spell} does not have a BaseSpellAttribute component.");
+                Debug.LogWarning($"Spell {spell} does not have a BaseSpellAttribute component or spellIcon.");
             }
         }
     }

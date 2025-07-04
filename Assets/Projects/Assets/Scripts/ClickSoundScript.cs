@@ -7,6 +7,7 @@ public class ClickSoundScript : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDoc;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip clickSound;
     [SerializeField] private List<string> classNames = new List<string> { "menu-button" };
 
     void Start()
@@ -22,6 +23,10 @@ public class ClickSoundScript : MonoBehaviour
                 {
                     if (audioSource != null)
                     {
+                        if (clickSound != null)
+                        {
+                            audioSource.clip = clickSound;
+                        }
                         audioSource.Play();
                     }
                 });

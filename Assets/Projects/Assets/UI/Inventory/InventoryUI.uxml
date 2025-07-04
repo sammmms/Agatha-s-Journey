@@ -1,8 +1,16 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Projects/Assets/UI/Inventory/InventoryUSS.uss?fileID=7433441132597879392&amp;guid=6b7215e999887427e9c0b3a769d6cb13&amp;type=3#InventoryUSS" />
-    <engine:VisualElement style="flex-grow: 1; width: auto; height: auto; justify-content: center; align-content: center; align-self: auto; align-items: center; flex-direction: column;">
-        <engine:VisualElement name="InventoryBox" class="inventory_background" style="flex-grow: 0; width: 1200px; height: 800px; justify-content: center; align-items: center; align-self: center; align-content: center; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom-right-radius: 16px; border-bottom-left-radius: 16px; border-left-color: rgb(53, 53, 53); border-right-color: rgb(53, 53, 53); border-top-color: rgb(53, 53, 53); border-bottom-color: rgb(53, 53, 53); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; flex-direction: row;">
-            <engine:VisualElement name="EquipmentCard" class="card_background" />
+    <engine:VisualElement style="flex-grow: 1; width: auto; height: auto; justify-content: center; align-content: center; align-self: auto; align-items: center; flex-direction: column; background-color: rgba(19, 19, 19, 0.89);">
+        <engine:VisualElement name="InventoryBox" class="inventory_background" style="flex-grow: 0; justify-content: center; align-items: center; align-self: center; align-content: center; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom-right-radius: 16px; border-bottom-left-radius: 16px; border-left-color: rgb(53, 53, 53); border-right-color: rgb(53, 53, 53); border-top-color: rgb(53, 53, 53); border-bottom-color: rgb(53, 53, 53); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; flex-direction: row;">
+            <engine:VisualElement name="EquipmentCard" class="card_background" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+                <engine:VisualElement name="VisualElement" style="flex-grow: 1;" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+        <engine:VisualElement name="HotbarBackground" class="inventory_background" style="flex-grow: 0; align-self: center; justify-content: flex-start; align-items: flex-start; margin-top: 64px; margin-right: 64px; margin-bottom: 64px; margin-left: 64px; width: auto; flex-direction: row; flex-wrap: nowrap; background-image: url(&quot;project://database/Assets/GUI_Parts/Gui_parts/name_bar3.png?fileID=2800000&amp;guid=12eaceb7341922b4398ff20c8bbcff90&amp;type=3#name_bar3&quot;); -unity-background-image-tint-color: rgb(248, 248, 248);">
+            <engine:VisualElement name="Hotbar_1" class="hotbar_slot" style="flex-grow: 1; margin-left: 0;" />
+            <engine:VisualElement name="Hotbar_2" class="hotbar_slot" style="flex-grow: 1;" />
+            <engine:VisualElement name="Hotbar_3" class="hotbar_slot" style="flex-grow: 1;" />
+            <engine:VisualElement name="Hotbar_4" class="hotbar_slot" style="flex-grow: 1; margin-right: 0;" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

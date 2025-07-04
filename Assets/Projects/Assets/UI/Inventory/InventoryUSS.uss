@@ -2,27 +2,35 @@
     background-image: url("project://database/Assets/Hovl%20Studio/Magic%20effects%20pack/Textures/Concrete%20slab.png?fileID=2800000&guid=1b13dc101cf2ac7418019fd776161658&type=3#Concrete slab");
     -unity-background-image-tint-color: rgb(115, 103, 96);
     opacity: 1;
+    height: auto;
+    width: 572px;
+    padding-top: 32px;
+    padding-right: 32px;
+    padding-bottom: 32px;
+    padding-left: 32px;
+    max-width: none;
 }
 
 .card_background {
-    background-color: rgba(103, 103, 103, 0.47);
-    background-image: url("project://database/Assets/GUI_Parts/Gui_parts/Mini_frame0.png?fileID=2800000&guid=4293f3f43e7a5524dbcb191b0ef09d9c&type=3#Mini_frame0");
+    background-color: rgba(51, 51, 51, 0.47);
+    background-image: url("project://database/Assets/GUI_Parts/Gui_parts/Frame_mid.png?fileID=2800000&guid=d5bda4f272648f34c8020e4e2772de3f&type=3#Frame_mid");
     -unity-background-image-tint-color: rgba(87, 87, 87, 0.47);
-    height: 90%;
-    margin-top: 32px;
-    margin-right: 48px;
-    margin-bottom: 32px;
-    margin-left: 48px;
-    padding-top: 56px;
-    padding-right: 72px;
-    padding-bottom: 56px;
-    padding-left: 72px;
+    height: 100%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 48px;
+    padding-right: 48px;
+    padding-bottom: 48px;
+    padding-left: 48px;
     width: auto;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-self: auto;
     align-items: flex-start;
     flex-grow: 1;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .items {
@@ -33,22 +41,45 @@
     align-self: flex-start;
     align-content: auto;
     -unity-background-scale-mode: stretch-to-fill;
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     margin-top: 8px;
     margin-right: 8px;
     margin-bottom: 8px;
     margin-left: 8px;
-    border-top-width: 2px;
-    border-right-width: 2px;
-    border-bottom-width: 2px;
-    border-left-width: 2px;
-    border-left-color: rgb(67, 67, 67);
-    border-right-color: rgb(67, 67, 67);
-    border-top-color: rgb(67, 67, 67);
-    border-bottom-color: rgb(67, 67, 67);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
+    border-top-width: 8px;
+    border-right-width: 8px;
+    border-bottom-width: 8px;
+    border-left-width: 8px;
+    border-left-color: rgb(46, 46, 46);
+    border-right-color: rgb(46, 46, 46);
+    border-top-color: rgb(46, 46, 46);
+    border-bottom-color: rgb(46, 46, 46);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    -unity-background-image-tint-color: rgb(207, 207, 207);
+}
+
+.hotbar_slot {
+    width: 120px;
+    height: 120px;
+    background-image: url("project://database/Assets/GUI_Parts/Gui_parts/Mini_frame1.png?fileID=2800000&guid=9a38d34966735d24e9cda5ecb0a183bc&type=3#Mini_frame1");
+    margin-left: 16px;
+    margin-right: 16px;
+    background-color: rgba(103, 97, 76, 0.07);
+    padding-top: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+}
+
+.disable {
+    -unity-background-image-tint-color: rgba(72, 72, 72, 0.39);
+    background-color: rgba(84, 84, 84, 0.39);
+}
+
+.hotbar-item {
+    flex-grow: 1;
 }

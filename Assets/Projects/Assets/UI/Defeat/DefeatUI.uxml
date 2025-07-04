@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Projects/Assets/UI/Defeat/DefeatUSS.uss?fileID=7433441132597879392&amp;guid=446586fd05d58402787f932805b02a33&amp;type=3#DefeatUSS" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.87);">
+        <ui:VisualElement style="flex-grow: 1; align-self: center; justify-content: center; align-items: center; text-shadow: 0 4px 0 rgba(0, 0, 0, 0);">
+            <ui:Label text="Label" name="Title" style="font-size: 80px; -unity-font-definition: resource(&apos;Fonts/Times&apos;); -unity-font-style: bold; color: rgb(255, 255, 255);" />
+            <ui:Label text="Label" name="Subtitle" style="font-size: 40px; -unity-font-definition: resource(&apos;Fonts/Times&apos;); color: rgb(176, 176, 176);" />
+            <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: row; margin-left: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; text-shadow: 0 0 0 rgba(0, 0, 0, 0);">
+                <ui:Button text="Exit" name="ExitButton" class="button" style="color: rgb(115, 70, 70);" />
+                <ui:Button text="Retry" name="RetryButton" class="button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

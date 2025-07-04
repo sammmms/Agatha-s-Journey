@@ -94,13 +94,49 @@ public class SpellController : MonoBehaviour
         HandlePlayerShoot();
     }
 
+    public void AddSpellToHotbar(Spell spell)
+    {
+        if (hotbarSpell.Contains(spell))
+        {
+            Debug.LogWarning($"Spell {spell} is already in the hotbar.");
+            return;
+        }
+
+        if (hotbarSpell.Count(spellItem => spellItem != Spell.None) >= 4)
+        {
+            Debug.LogWarning("Hotbar is full. Cannot add more spells.");
+            return;
+        }
+
+        var spellIndex = hotbarSpell.IndexOf(Spell.None);
+        if (spellIndex != -1)
+        {
+            hotbarSpell[spellIndex] = spell;
+            return;
+        }
+
+        hotbarSpell.Add(spell);
+        Debug.Log($"Added {spell} to hotbar.");
+    }
+
+    public void RemoveSpellFromHotbar(Spell spell)
+    {
+        if (!hotbarSpell.Contains(spell))
+        {
+            Debug.LogWarning($"Spell {spell} is not in the hotbar.");
+            return;
+        }
+
+        hotbarSpell.Remove(spell);
+        Debug.Log($"Removed {spell} from hotbar.");
+    }
+
     private void HandleHotbarInput(int index)
     {
         Spell spell = hotbarSpell[index - 1];
 
         ToggleHotbarItem(spell);
 
-        HandleSpellCombination();
     }
 
     private void ToggleHotbarItem(Spell spell)
@@ -114,7 +150,7 @@ public class SpellController : MonoBehaviour
             activeSpells.Add(spell);
         }
 
-        // TODO: Handle UI //
+        HandleSpellCombination();
     }
 
     #endregion

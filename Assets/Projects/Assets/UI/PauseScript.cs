@@ -5,7 +5,9 @@ using UnityEngine.UIElements;
 public class PauseScript : MonoBehaviour
 {
     [SerializeField] private UIDocument pauseMenuUI;
-    [SerializeField] private UIDocument equipmentMenuUI;
+    [SerializeField] private UIDocument inventoryMenuUI;
+    [SerializeField] private AudioClip pauseSound;
+    [SerializeField] private AudioClip resumeSound;
     private bool isPaused = false;
 
     void Start()
@@ -39,13 +41,42 @@ public class PauseScript : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.rootVisualElement.style.display = DisplayStyle.None;
+        }
+
+        if (inventoryMenuUI != null)
+        {
+            inventoryMenuUI.rootVisualElement.style.display = DisplayStyle.None;
+        }
+    }
+
     public void PauseGame()
     {
+        if (inventoryMenuUI != null && inventoryMenuUI.rootVisualElement.style.display != DisplayStyle.None)
+        {
+            return;
+        }
+
         pauseMenuUI.rootVisualElement.style.display = DisplayStyle.Flex;
         Time.timeScale = 0f;
         isPaused = true;
         UnityEngine.Cursor.visible = true;
         UnityEngine.Cursor.lockState = CursorLockMode.None;
+
+        if (pauseSound != null)
+        {
+            AudioSource.PlayClipAtPoint(pauseSound, Camera.main.transform.position);
+        }
+
+
+        if (inventoryMenuUI != null)
+        {
+            inventoryMenuUI.gameObject.SetActive(false);
+        }
     }
 
 
@@ -56,7 +87,17 @@ public class PauseScript : MonoBehaviour
         Time.timeScale = 1f;
         isPaused = false;
 
+        if (resumeSound != null)
+        {
+            AudioSource.PlayClipAtPoint(resumeSound, Camera.main.transform.position);
+        }
 
+
+        if (inventoryMenuUI != null)
+        {
+            inventoryMenuUI.gameObject.SetActive(true);
+            inventoryMenuUI.rootVisualElement.style.display = DisplayStyle.None;
+        }
     }
 
     private void OnExitButtonClicked()
@@ -76,10 +117,10 @@ public class PauseScript : MonoBehaviour
     private void OnEquipmentButtonClicked()
     {
         HandleResume();
-        if (equipmentMenuUI != null)
+        if (inventoryMenuUI != null)
         {
-            equipmentMenuUI.rootVisualElement.style.display =
-                equipmentMenuUI.rootVisualElement.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
+            inventoryMenuUI.rootVisualElement.style.display =
+                inventoryMenuUI.rootVisualElement.style.display == DisplayStyle.None ? DisplayStyle.Flex : DisplayStyle.None;
             pauseMenuUI.rootVisualElement.style.display = DisplayStyle.None;
         }
     }

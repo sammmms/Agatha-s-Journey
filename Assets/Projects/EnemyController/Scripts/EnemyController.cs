@@ -87,7 +87,6 @@ public class EnemyController : MonoBehaviour
         GameObject closestPlayer = null;
         float closestDistance = Mathf.Infinity;
 
-        print("Player: " + players);
 
         foreach (GameObject player in players)
         {
@@ -119,14 +118,21 @@ public class EnemyController : MonoBehaviour
         float distance = direction.magnitude;
         direction.Normalize();
 
-        // Visualize the raycast (editor only)
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, direction, out hit, distance))
+        // Ignore self by using a layer mask or by checking hit.collider != this
+        if (Physics.Raycast(enemyEyes, direction, out RaycastHit hit, distance))
         {
             Debug.DrawRay(enemyEyes, direction * distance, Color.red, 1f);
-            // Visualize the raycast for debugging
-            if (hit.collider.gameObject == target)
+            // Ignore self
+            if (hit.collider.gameObject == gameObject)
+            {
+                // Try to raycast again, skipping self
+                if (Physics.Raycast(hit.point + direction * 0.01f, direction, out RaycastHit hit2, distance - hit.distance))
+                {
+                    if (hit2.collider.gameObject == target)
+                        return true;
+                }
+            }
+            else if (hit.collider.gameObject == target)
             {
                 return true;
             }
