@@ -6,27 +6,46 @@ public class EnemyStatus : MonoBehaviour
     [Header("Enemy Status")]
     [SerializeField] private float _maxHealth = 100f;
     [SerializeField] private float _currentHealth = 100f;
+    public float MaxHealth => _maxHealth;
+    public float CurrentHealth => _currentHealth;
     [SerializeField] public float speed = 5f;
+    [SerializeField] public float dashSpeed = 10f;
+    [SerializeField] public float dashDuration = 1f;
+    [SerializeField] public float dashCooldown = 5f; // Cooldown before the enemy can dash again
+
+    [Header("Enemy Attack Settings")]
     [SerializeField] public float attackPower = 10f;
-    [SerializeField] public float attackRange = 2f;
-    [SerializeField] private float _attackCooldown = 1f;
-    [SerializeField] public float detectionRange = 10f;
-    [SerializeField] private float _fieldOfView = 60f;
-    [SerializeField] private float _fieldOfViewAngle = 45f;
-    [SerializeField] private float _fieldOfViewDistance = 10f;
+    [SerializeField] public float meleeAttackDistance = 1.5f;
+    [SerializeField] public float rangedAttackDistance = 10f;
+    [SerializeField] public float dashDetectionRange = 15f;
+    [SerializeField] public float detectionRange = 20f;
+    [SerializeField] public float fieldOfView = 60f;
+    [SerializeField] private float _attackCooldown = 2f;
 
     [Header("Enemy Regen Rate")]
     [SerializeField] private float _healthRegenRate = 1f;
+    [SerializeField] private float _regenCooldown = 5f; // Cooldown before regeneration starts
 
     private bool _isDead = false;
-    public bool isDead => _isDead;
+    public bool IsDead => _isDead;
+    public bool isStunned = false;
+    private bool CanAct => !_isDead && !isStunned;
+
+
 
     private bool _isAttacking = false;
-    public bool canAttack
+    [SerializeField]
+    public bool CanAttack
     {
-        get => !_isAttacking && !isDead;
+        get => CanAct && !_isAttacking;
+        set => _isAttacking = value;
     }
 
+    private bool _isDashing = false;
+
+    private bool _dashOnCooldown = false;
+    [SerializeField]
+    public bool CanDash => CanAct && !_isDashing && !_dashOnCooldown;
     #region Coroutine Variables
     private Coroutine _regenCoroutine;
 
@@ -36,7 +55,7 @@ public class EnemyStatus : MonoBehaviour
     {
         _currentHealth = _maxHealth;
         // Start the regeneration process
-        _InitiateRegen();
+        InitiateRegen();
     }
 
     public void TakeDamage(float damage)
@@ -50,7 +69,27 @@ public class EnemyStatus : MonoBehaviour
             _isDead = true;
             // Handle death (e.g., play animation, drop loot, etc.)
         }
+        else
+        {
+            // If the enemy is not dead, start the regeneration cooldown
+            if (_regenCoroutine != null)
+            {
+                StopCoroutine(_regenCoroutine);
+            }
+
+            _regenCoroutine = StartCoroutine(RegenCooldown());
+        }
     }
+
+
+
+    private IEnumerator RegenCooldown()
+    {
+        yield return new WaitForSeconds(_regenCooldown); // Adjust the wait time as needed
+
+        InitiateRegen(); // Start regeneration after cooldown
+    }
+
 
     public void TriggerAttack()
     {
@@ -61,6 +100,15 @@ public class EnemyStatus : MonoBehaviour
         StartCoroutine(AttackCooldown());
     }
 
+    public void TriggerDash()
+    {
+        if (_isDead || _isDashing) return;
+
+        StartCoroutine(DashCoroutine());
+        // Play dash animation
+    }
+
+
     private IEnumerator AttackCooldown()
     {
         yield return new WaitForSeconds(_attackCooldown);
@@ -68,12 +116,26 @@ public class EnemyStatus : MonoBehaviour
         _isAttacking = false;
     }
 
-    private void _InitiateRegen()
+    private IEnumerator DashCoroutine()
     {
-        if (_regenCoroutine == null)
-        {
-            _regenCoroutine = StartCoroutine(RegenStatus());
-        }
+        if (_isDead || _isDashing) yield break;
+
+        _isDashing = true;
+
+        yield return new WaitForSeconds(dashDuration);
+
+        _isDashing = false;
+        _dashOnCooldown = true;
+
+        // Start cooldown after dashing
+        yield return new WaitForSeconds(dashCooldown);
+
+        _dashOnCooldown = false;
+    }
+
+    private void InitiateRegen()
+    {
+        _regenCoroutine ??= StartCoroutine(RegenStatus());
     }
 
     private IEnumerator RegenStatus()

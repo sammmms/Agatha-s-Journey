@@ -2,11 +2,8 @@ using UnityEngine;
 
 abstract public class AuraSpellAttribute : BaseSpellAttribute
 {
-    protected PlayerStatus PlayerStatus
-    {
-        get { return spellCaster.TryGetComponent(out PlayerStatus playerStatus) ? playerStatus : null; }
-    }
-    public abstract void CancelSpell(PlayerController playerController);
+
+    public abstract void CancelSpell();
 
     public GameObject InstantiateSpell()
     {
@@ -16,6 +13,16 @@ abstract public class AuraSpellAttribute : BaseSpellAttribute
 
         position.y += 0.8f;
 
-        return Instantiate(spellPrefab, position, Quaternion.identity);
+        GameObject gameObject = Instantiate(spellPrefab, position, Quaternion.identity);
+
+        BaseSpellAttribute[] baseSpellAttributes = gameObject.GetComponents<BaseSpellAttribute>();
+        foreach (var baseSpellAttribute in baseSpellAttributes)
+        {
+            if (baseSpellAttribute != null)
+            {
+                baseSpellAttribute.CopyFrom(this);
+            }
+        }
+        return gameObject;
     }
 }

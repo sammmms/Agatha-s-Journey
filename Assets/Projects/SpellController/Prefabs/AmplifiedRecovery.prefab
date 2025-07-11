@@ -4859,10 +4859,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 12
   spellPrefab: {fileID: 470367661892998335}
+  onHitEffect: {fileID: 0}
   spellSound: {fileID: 8300000, guid: 6336d676c65954269abcc4e5fef411d3, type: 3}
-  spellCost: 10
+  spellIcon: {fileID: 0}
+  spellCost: 9
   spellCooldown: 0
-  healAmount: 15
+  healAmount: 12
 --- !u!1 &2669950487459991277
 GameObject:
   m_ObjectHideFlags: 0

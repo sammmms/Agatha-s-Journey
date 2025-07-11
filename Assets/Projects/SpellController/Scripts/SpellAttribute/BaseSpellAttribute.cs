@@ -5,6 +5,7 @@ public abstract class BaseSpellAttribute : MonoBehaviour
     [Header("Spell Object")]
     public Spell spell;
     public GameObject spellPrefab;
+    public ParticleSystem onHitEffect;
     public AudioClip spellSound;
     public Sprite spellIcon;
 
@@ -20,9 +21,14 @@ public abstract class BaseSpellAttribute : MonoBehaviour
         get { return spellCaster != null ? spellCaster.transform.position : Vector3.zero; }
     }
 
-    public bool CanCastSpell(float currentCooldown, float currentMana)
+    protected PlayerStatus PlayerStatus
     {
-        return currentCooldown >= spellCooldown && currentMana >= spellCost;
+        get { return spellCaster.TryGetComponent(out PlayerStatus playerStatus) ? playerStatus : null; }
+    }
+
+    public bool CanCastSpell(float currentMana)
+    {
+        return currentMana >= spellCost;
     }
 
 
@@ -49,4 +55,18 @@ public abstract class BaseSpellAttribute : MonoBehaviour
     }
 
     protected abstract GameObject TriggerSpell();
+
+    public virtual void CopyFrom(BaseSpellAttribute other)
+    {
+        if (other == null) return;
+
+        spell = other.spell;
+        spellPrefab = other.spellPrefab;
+        spellSound = other.spellSound;
+        spellIcon = other.spellIcon;
+        spellCost = other.spellCost;
+        spellCooldown = other.spellCooldown;
+        spellCaster = other.spellCaster;
+
+    }
 }

@@ -14736,9 +14736,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 22
   spellPrefab: {fileID: 4693783035006191958}
-  spellCost: 8
+  onHitEffect: {fileID: 0}
+  spellSound: {fileID: 0}
+  spellIcon: {fileID: 0}
+  spellCost: 7
   spellCooldown: 0
-  barrierDamageReduction: 14
+  barrierDamageReduction: 12
 --- !u!1 &5913378902121189605
 GameObject:
   m_ObjectHideFlags: 0

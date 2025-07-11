@@ -7,6 +7,8 @@ public class PlayerStatus : MonoBehaviour
     [Header("Sound Related")]
     [SerializeField] public AudioClip damageSound;
     [SerializeField] public AudioClip deathSound;
+    [Header("Particle Related")]
+    [SerializeField] public ParticleSystem damageParticle;
 
     [Header("UI")]
     [SerializeField] public HealthBar healthBar;
@@ -16,6 +18,11 @@ public class PlayerStatus : MonoBehaviour
     [Header("Player Control Status")]
     [SerializeField] public float runSpeed = 4f;
     [SerializeField] public float sprintSpeed = 8f;
+    [SerializeField] public float sprintStaminaCost = 0.5f; // Stamina cost for sprinting
+    [SerializeField] public float dashSpeed = 48f;
+    [SerializeField] public float dashDuration = 0.5f;
+    [SerializeField] public float dashCooldown = 5f; // Cooldown before the player can dash again
+    [SerializeField] public float dashStaminaCost = 10f; // Stamina cost for dashing
     [SerializeField] public float jumpSpeed = 1.0f;
     [SerializeField] public float gravity = 25f;
 
@@ -39,7 +46,7 @@ public class PlayerStatus : MonoBehaviour
     [SerializeField] float damageReduction = 0;
 
     [Header("Damage Buff")]
-    [SerializeField] float damageBuff = 0;
+    [SerializeField] public float damageBuff = 0;
 
     [Header("Heal Buff")]
     [SerializeField] float healBuff = 0;
@@ -53,6 +60,7 @@ public class PlayerStatus : MonoBehaviour
 
     private bool _isDead = false;
     public bool IsDead => _isDead;
+
     private void Start()
     {
         // Get the PlayerState component from the GameObject
@@ -175,6 +183,41 @@ public class PlayerStatus : MonoBehaviour
     }
     #endregion
 
+    public bool _canDash = true;
+    private float _dashCooldownTimer = 0f;
+
+    // Property to get the remaining cooldown time (0 if dash is available)
+    public float DashCooldownRemaining => _canDash ? 0f : Mathf.Max(0f, dashCooldown - _dashCooldownTimer);
+
+    // This method is now called by the PlayerController to start the cooldown.
+    public void TriggerDash()
+    {
+        if (_isDead || !_canDash) return;
+
+        // Start the cooldown timer.
+        StartCoroutine(DashCooldownCoroutine());
+    }
+
+    // Coroutine to handle the cooldown timer and update the timer value
+    private IEnumerator DashCooldownCoroutine()
+    {
+        _canDash = false;
+        _dashCooldownTimer = 0f;
+
+        while (_dashCooldownTimer < dashCooldown)
+        {
+            _dashCooldownTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        _canDash = true;
+        _dashCooldownTimer = 0f;
+    }
+
+    // Property for checking if dash is available
+    public bool CanDash => _canDash;
+
+
     public void TakeDamage(float damage)
     {
         damage -= damageReduction;
@@ -193,11 +236,11 @@ public class PlayerStatus : MonoBehaviour
         if (damageSound != null)
         {
             AudioSource.PlayClipAtPoint(damageSound, transform.position);
+            damageParticle?.Play();
         }
 
 
         SetHealth(currentHealthPoint - damage);
-        _playerAnimation.PlayHitAnimation();
     }
 
     public void TakeMana(float mana)

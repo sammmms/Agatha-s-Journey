@@ -301,6 +301,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872df68f039c2694285e6b1df988ccd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyTag: Enemies
+  groundTag: Ground
+  destroyDelay: 0.1
+  destroyOnHit: 1
 --- !u!114 &6794645063652797984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,14 +319,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 64
   spellPrefab: {fileID: 4534381701493877084}
+  onHitEffect: {fileID: 0}
   spellSound: {fileID: 8300000, guid: 2a7a753509f2a4d6d82857d293a361f7, type: 3}
   spellIcon: {fileID: 21300000, guid: 530bcabb1501d8148a19a77465ecac03, type: 3}
-  spellCost: 5
+  spellCost: 4
   spellCooldown: 2
-  spellSpeed: 0
-  spellDamage: 0
+  spellDamage: 7
+  spellSpeed: 15
   stunDuration: 0
   stunPerInstance: 0
+  isTracking: 0
 --- !u!65 &-6640010345485823802
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -338,9 +344,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: -0.36, y: 0.42, z: 4.33}
+  m_Size: {x: 0.36, y: 0.42, z: 4.33}
   m_Center: {x: -0.0000004991889, y: 0, z: 0.16469252}

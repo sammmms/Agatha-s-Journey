@@ -33,19 +33,21 @@ public class PlayerAnimation : MonoBehaviour
 
     private void UpdateAnimationState()
     {
-        // TODO : Die Animation
         bool isGrounded = _playerState.InGroundedState();
         bool isJumping = _playerState.CurrentPlayerMovementState == PlayerMovementState.Jumping;
         bool isFalling = _playerState.CurrentPlayerMovementState == PlayerMovementState.Falling;
 
-        bool isSprinting = _playerLocomotionInput.SprintToggled;
-
         Vector2 inputTarget = _playerLocomotionInput.MovementInput;
-
-        if (isSprinting)
+        // Determine speed multiplier based on player state
+        float speedMultiplier = _playerState.CurrentPlayerMovementState switch
         {
-            inputTarget *= 1.5f;
-        }
+            PlayerMovementState.Walking => 0.8f,
+            PlayerMovementState.ChargingMana => 0.8f,
+            PlayerMovementState.Running => 1f,
+            PlayerMovementState.Sprinting => 2.5f,
+            _ => 1f,
+        };
+        inputTarget *= speedMultiplier;
 
         _currentBlendInput = Vector3.Lerp(
             _currentBlendInput,
@@ -74,5 +76,16 @@ public class PlayerAnimation : MonoBehaviour
     public void PlayDeathAnimation()
     {
         _animator.SetTrigger("isDead");
+    }
+
+
+    public void PlayManaChargeAnimation()
+    {
+        _animator.SetBool("isChargingMana", true);
+    }
+
+    public void StopManaChargeAnimation()
+    {
+        _animator.SetBool("isChargingMana", false);
     }
 }

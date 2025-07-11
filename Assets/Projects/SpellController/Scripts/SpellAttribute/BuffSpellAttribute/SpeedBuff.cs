@@ -12,9 +12,8 @@ class SpeedBuff : BuffSpellAttribute
 
     }
 
-    public override void CancelSpell(PlayerController playerController)
+    public override void CancelSpell()
     {
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
-        playerStatus.RemoveSpeedBuff(speedBuffAmount);
+        PlayerStatus.RemoveSpeedBuff(speedBuffAmount);
     }
 }

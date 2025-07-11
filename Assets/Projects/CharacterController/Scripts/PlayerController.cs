@@ -29,16 +29,36 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public float lookLimitV = 89f;
 
+    [Header("Mana Charging")]
+    [SerializeField]
+    public float chargeMovementSpeedMultiplier = 0.2f;
+    [SerializeField]
+    public float manaChargeRate = 15f; // Mana per second
+    [SerializeField]
+    public float chargeStaminaCost = 10f; // Stamina per second
+    [SerializeField]
+    public GameObject manaChargeEffectPrefab;
+
+    public GameObject dashEffectPrefab;
+
     private PlayerStatus _playerStatus;
     private PlayerLocomotionInput _playerLocomotionInput;
     private PlayerState _playerState;
+    private PlayerAnimation _playerAnimation;
 
     private Vector2 _cameraRotation = Vector2.zero;
-
+    private Vector3 _horizontalVelocity;
     private float _verticalVelocity = 0f;
+    private bool _wasSprintingWhenJumped;
+    private bool _isDashing; // Flag to indicate if a dash is active
+
+
 
     private Coroutine sprintCoroutine;
+    private Coroutine _dashCoroutine; // To keep track of the active dash
+    private Coroutine _chargeManaCoroutine; // To track the mana charge process
 
+    #region Player Status Properties
     private float RunSpeed
     {
         get { return _playerStatus.runSpeed; }
@@ -62,6 +82,7 @@ public class PlayerController : MonoBehaviour
         get { return _playerStatus.gravity; }
         set { _playerStatus.gravity = value; }
     }
+    #endregion
 
     private void Start()
     {
@@ -74,16 +95,40 @@ public class PlayerController : MonoBehaviour
         _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
         _playerState = GetComponent<PlayerState>();
         _playerStatus = GetComponent<PlayerStatus>();
+        _playerAnimation = GetComponent<PlayerAnimation>();
+
+        _playerLocomotionInput.OnDashTriggered += HandlePlayerDash;
     }
 
     private void Update()
     {
-
         HandlePlayerDeath();
         if (_playerStatus.IsDead) return;
+
+        // Handle mana charging first as it can affect state
+        HandleManaCharging();
+
+        // The state must be updated next, as movement logic depends on it.
         UpdateMovementState();
+
+        // If we are dashing, the coroutine handles movement, so we skip the standard handlers.
+
         HandleVerticalMovement();
         HandleLateralMovement();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (_playerStatus.IsDead) return;
+
+        _playerStatus.TakeDamage(damage);
+        _playerAnimation.PlayHitAnimation();
+
+        if (_playerStatus.IsDead)
+        {
+            _playerAnimation.PlayDeathAnimation();
+            HandlePlayerDeath();
+        }
     }
 
     private void HandlePlayerDeath()
@@ -97,19 +142,145 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void HandleManaCharging()
+    {
+        // Conditions to charge mana: input is held, player is grounded, and has stamina
+        bool canCharge = _playerLocomotionInput.ManaCharged && IsGrounded() && _playerStatus.currentStaminaPoint > 0;
+
+        if (canCharge && _chargeManaCoroutine == null)
+        {
+            // Start the coroutine if we can charge and it's not already running
+            _playerAnimation.PlayManaChargeAnimation();
+            _chargeManaCoroutine = StartCoroutine(ChargeManaCoroutine());
+
+            if (manaChargeEffectPrefab != null)
+            {
+                manaChargeEffectPrefab.SetActive(true);
+            }
+        }
+        else if (!canCharge && _chargeManaCoroutine != null)
+        {
+            // Stop the coroutine if the conditions are no longer met
+            StopCoroutine(_chargeManaCoroutine);
+            _playerAnimation.StopManaChargeAnimation();
+            _chargeManaCoroutine = null;
+
+            if (manaChargeEffectPrefab != null)
+            {
+                manaChargeEffectPrefab.SetActive(false);
+            }
+        }
+    }
+
+    private IEnumerator ChargeManaCoroutine()
+    {
+        while (_playerStatus.currentStaminaPoint > 0 && _playerLocomotionInput.ManaCharged)
+        {
+            // Recover mana over time
+            float newMana = _playerStatus.currentManaPoint + manaChargeRate * Time.deltaTime;
+            _playerStatus.SetMana(Mathf.Min(newMana, _playerStatus.maxManaPoint));
+
+            // Consume stamina over time
+            _playerStatus.TakeStamina(chargeStaminaCost * Time.deltaTime);
+
+            yield return null; // Wait for the next frame
+        }
+        // Coroutine ends, reset the reference
+        _chargeManaCoroutine = null;
+    }
+
+
+    // This method now checks the PlayerStatus to see if a dash is allowed.
+    private void HandlePlayerDash()
+    {
+        // Check the CanDash property from PlayerStatus, which handles the cooldown.
+        if (_playerStatus.CanDash && _dashCoroutine == null)
+        {
+            _dashCoroutine = StartCoroutine(DashCoroutine());
+        }
+    }
+
+    private IEnumerator DashCoroutine()
+    {
+        // --- 1. SETUP ---
+        // Stamina check is still useful here as a secondary condition.
+        if (_playerStatus.currentStaminaPoint < _playerStatus.dashStaminaCost)
+        {
+            Debug.LogWarning("Not enough stamina to dash.");
+            _dashCoroutine = null;
+            yield break; // Exit the coroutine
+        }
+
+        // Tell PlayerStatus to start the cooldown and consume stamina.
+        _playerStatus.TriggerDash();
+        _playerStatus.TakeStamina(_playerStatus.dashStaminaCost);
+
+        // Play dash effect
+        if (dashEffectPrefab != null)
+        {
+            dashEffectPrefab.SetActive(true);
+        }
+
+        // Set the dashing state and flag
+        _isDashing = true;
+        _playerState.SetPlayerMovementState(PlayerMovementState.Dashing);
+
+        // This coroutine now only waits for the duration.
+        // The actual movement is handled in the Update loop's movement handlers.
+        yield return new WaitForSeconds(_playerStatus.dashDuration);
+
+        // --- 2. CLEANUP ---
+        _isDashing = false;
+        _playerState.SetPlayerMovementState(PlayerMovementState.Idling); // Reset state
+        _dashCoroutine = null; // Allow this controller to start a new dash coroutine.
+
+        // Wait for around 1 second before disabling dash effect
+        yield return new WaitForSeconds(1f);
+
+        // Disable dash effect
+        if (dashEffectPrefab != null)
+        {
+            dashEffectPrefab.SetActive(false);
+        }
+    }
+
     private void UpdateMovementState()
     {
+        // If a dash is in progress, it's the only state that matters.
+        if (_isDashing)
+        {
+            _playerState.SetPlayerMovementState(PlayerMovementState.Dashing);
+            return;
+        }
+
+        // If mana charging is active, it takes priority over other ground states.
+        if (_chargeManaCoroutine != null)
+        {
+            _playerState.SetPlayerMovementState(PlayerMovementState.ChargingMana);
+            return;
+        }
+
         bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
         bool isMovingLaterally = IsMovingLaterally();
         bool canSprint = _playerStatus.currentStaminaPoint > 0;
         bool isGrounded = IsGrounded();
         bool isMovingBackward = _playerLocomotionInput.MovementInput.y < 0;
         bool isSprinting = _playerLocomotionInput.SprintToggled && isMovingLaterally && canSprint && !isMovingBackward && isGrounded;
+        bool isCasting = _playerState.IsCastingSpell;
 
         PlayerMovementState lateralState =
             isSprinting ? PlayerMovementState.Sprinting
             : isMovingLaterally || isMovementInput ? PlayerMovementState.Running
             : PlayerMovementState.Idling;
+
+        if (isCasting && lateralState == PlayerMovementState.Idling)
+        {
+            lateralState = PlayerMovementState.Casting;
+        }
+        else if (isCasting)
+        {
+            lateralState = PlayerMovementState.MovingWhileCasting;
+        }
 
         _playerState.SetPlayerMovementState(lateralState);
 
@@ -122,23 +293,29 @@ public class PlayerController : MonoBehaviour
             _playerState.SetPlayerMovementState(PlayerMovementState.Falling);
         }
     }
-    private Vector3 _horizontalVelocity;
-    private bool _wasSprintingWhenJumped;
+
     private void HandleVerticalMovement()
     {
+        if (_isDashing)
+        {
+            // Negate gravity during the dash to allow for horizontal air dashes.
+            _verticalVelocity = 0f;
+            return;
+        }
+
+        // Standard gravity and jump logic for non-dashing states.
         bool isGrounded = _playerState.InGroundedState();
 
         if (isGrounded && _verticalVelocity < 0)
         {
             _verticalVelocity = -2f;
-
             _wasSprintingWhenJumped = false;
         }
 
-        if (isGrounded && _playerLocomotionInput.JumpPressed)
+        if (isGrounded && _playerLocomotionInput.JumpPressed && _playerState.CanJump())
         {
             _wasSprintingWhenJumped = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-            _verticalVelocity = Mathf.Sqrt(JumpSpeed * 2f * Gravity); // Corrected jump formula
+            _verticalVelocity = Mathf.Sqrt(JumpSpeed * 2f * Gravity);
         }
 
         _verticalVelocity -= Gravity * Time.deltaTime;
@@ -146,39 +323,64 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLateralMovement()
     {
-        bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
-        bool isGrounded = _playerState.InGroundedState();
-
-        // --- MODIFIED SPEED LOGIC ---
-        // We should maintain sprint speed if we are currently sprinting OR if we are in the air
-        // and the jump was initiated from a sprint.
-        bool maintainSprintSpeed = isSprinting || (!isGrounded && _wasSprintingWhenJumped);
-        float currentSpeed = maintainSprintSpeed ? SprintSpeed : RunSpeed;
-        // --- END OF MODIFICATION ---
-
-        if (isSprinting && isGrounded)
+        Vector3 finalVelocity;
+        if (_isDashing)
         {
-            HandleConsumeStamina();
+            // During a dash, always use dashSpeed, regardless of current velocity or buffs.
+            Vector3 inputDirection = new Vector3(_playerLocomotionInput.MovementInput.x, 0, _playerLocomotionInput.MovementInput.y);
+            Vector3 cameraForwardXZ = Vector3.Scale(_playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 cameraRightXZ = Vector3.Scale(_playerCamera.transform.right, new Vector3(1, 0, 1)).normalized;
+            Vector3 dashDirection = inputDirection != Vector3.zero
+                ? (cameraRightXZ * inputDirection.x + cameraForwardXZ * inputDirection.z).normalized
+                : cameraForwardXZ;
+
+            _horizontalVelocity = dashDirection * _playerStatus.dashSpeed;
+        }
+        else
+        {
+            // Standard lateral movement for non-dashing states.
+            bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
+            bool isCharging = _playerState.CurrentPlayerMovementState == PlayerMovementState.ChargingMana;
+            bool isGrounded = _playerState.InGroundedState();
+
+            bool maintainSprintSpeed = isSprinting || (!isGrounded && _wasSprintingWhenJumped);
+            float currentSpeed = maintainSprintSpeed ? SprintSpeed : RunSpeed;
+
+            // Slow the player down if they are charging mana
+            if (isCharging)
+            {
+                currentSpeed *= chargeMovementSpeedMultiplier;
+            }
+
+            if (isSprinting && isGrounded)
+            {
+                HandleConsumeStamina();
+            }
+
+            Vector3 cameraForwardXZ = Vector3.Scale(_playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 cameraRightXZ = Vector3.Scale(_playerCamera.transform.right, new Vector3(1, 0, 1)).normalized;
+            Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x +
+                                         cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
+
+            if (isCharging && movementDirection.magnitude <= 0.01f)
+            {
+                // If charging and no movement input, stop horizontal movement
+                _horizontalVelocity = Vector3.zero;
+            }
+            else if (movementDirection.magnitude > 0.01f)
+            {
+                float currentAcceleration = isGrounded ? (maintainSprintSpeed ? sprintAcceleration : runAcceleration) : runAcceleration * 0.5f;
+                _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, movementDirection.normalized * currentSpeed, currentAcceleration * Time.deltaTime);
+            }
+            else if (isGrounded)
+            {
+                _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, Vector3.zero, drag * Time.deltaTime);
+            }
         }
 
-        Vector3 cameraForwardXZ = Vector3.Scale(_playerCamera.transform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 cameraRightXZ = Vector3.Scale(_playerCamera.transform.right, new Vector3(1, 0, 1)).normalized;
-        Vector3 movementDirection = (cameraRightXZ * _playerLocomotionInput.MovementInput.x +
-                                     cameraForwardXZ * _playerLocomotionInput.MovementInput.y);
-
-        if (movementDirection.magnitude > 0.01f)
-        {
-            // Use a ternary for acceleration as well, makes it cleaner
-            float currentAcceleration = isGrounded ? (maintainSprintSpeed ? sprintAcceleration : runAcceleration) : runAcceleration * 0.5f;
-
-            _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, movementDirection.normalized * currentSpeed, currentAcceleration * Time.deltaTime);
-        }
-        else if (isGrounded)
-        {
-            _horizontalVelocity = Vector3.MoveTowards(_horizontalVelocity, Vector3.zero, drag * Time.deltaTime);
-        }
-
-        Vector3 finalVelocity = _horizontalVelocity;
+        // The final Move call is now done once per frame for all states,
+        // which is much safer for the CharacterController.
+        finalVelocity = _horizontalVelocity;
         finalVelocity.y = _verticalVelocity;
 
         _characterController.Move(finalVelocity * Time.deltaTime);
@@ -195,7 +397,7 @@ public class PlayerController : MonoBehaviour
         bool isSprinting = _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
         while (isSprinting)
         {
-            _playerStatus.SetStamina(_playerStatus.currentStaminaPoint - 0.5f);
+            _playerStatus.TakeStamina(_playerStatus.sprintStaminaCost * Time.deltaTime);
             yield return new WaitForSeconds(0.05f);
             isSprinting =
                 _playerState.CurrentPlayerMovementState == PlayerMovementState.Sprinting;
@@ -206,35 +408,26 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        // Get smoothed look input (optional)
-        Vector2 lookInput = new Vector2(
+        if (_playerStatus.IsDead) return;
+        if (Time.timeScale == 0f) return;
+
+        Vector2 lookInput = new(
             _playerLocomotionInput.LookInput.x * lookSenseH,
             _playerLocomotionInput.LookInput.y * lookSenseV
         );
 
-        // Horizontal rotation (Y-axis)
         _cameraRotation.x += lookInput.x;
+        _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - lookInput.y, -lookLimitV, lookLimitV);
 
-        // Vertical rotation (X-axis) with clamping
-        _cameraRotation.y = Mathf.Clamp(
-            _cameraRotation.y - lookInput.y,
-            -lookLimitV,
-            lookLimitV
-        );
-
-        // Apply rotations using Quaternions to avoid gimbal lock
         Quaternion targetHorizontalRot = Quaternion.Euler(0f, _cameraRotation.x, 0f);
         Quaternion targetVerticalRot = Quaternion.Euler(_cameraRotation.y, 0f, 0f);
 
-        // Player rotates only horizontally (Y-axis)
         transform.rotation = targetHorizontalRot;
-
-        // Camera rotates vertically (X-axis) relative to player
         _playerCamera.transform.localRotation = targetVerticalRot;
     }
     private bool IsMovingLaterally()
     {
-        Vector3 lateralVelocity = new Vector3(
+        Vector3 lateralVelocity = new(
             _characterController.velocity.x,
             0,
             _characterController.velocity.z

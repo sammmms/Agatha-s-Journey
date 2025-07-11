@@ -2,6 +2,15 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
+    public bool IsCastingSpell
+    {
+        get
+        {
+            return CurrentPlayerMovementState == PlayerMovementState.Casting ||
+                CurrentPlayerMovementState == PlayerMovementState.MovingWhileCasting;
+        }
+        private set { }
+    }
     [field: SerializeField]
     public PlayerMovementState CurrentPlayerMovementState { get; private set; } =
         PlayerMovementState.Idling;
@@ -17,7 +26,32 @@ public class PlayerState : MonoBehaviour
             || CurrentPlayerMovementState == PlayerMovementState.Walking
             || CurrentPlayerMovementState == PlayerMovementState.Running
             || CurrentPlayerMovementState == PlayerMovementState.Sprinting
-            || CurrentPlayerMovementState == PlayerMovementState.Strafing;
+            || CurrentPlayerMovementState == PlayerMovementState.Strafing
+            || CurrentPlayerMovementState == PlayerMovementState.Casting
+            || CurrentPlayerMovementState == PlayerMovementState.Dashing;
+
+    }
+    public bool CanCastSpell()
+    {
+        return InGroundedState() && CurrentPlayerMovementState != PlayerMovementState.Casting
+            && CurrentPlayerMovementState != PlayerMovementState.Jumping
+            && CurrentPlayerMovementState != PlayerMovementState.Falling;
+    }
+
+    public bool CanDash()
+    {
+        return InGroundedState() && CurrentPlayerMovementState != PlayerMovementState.Casting
+            && CurrentPlayerMovementState != PlayerMovementState.Jumping
+            && CurrentPlayerMovementState != PlayerMovementState.Falling
+            && CurrentPlayerMovementState != PlayerMovementState.Dashing;
+    }
+
+    public bool CanJump()
+    {
+        return InGroundedState() && CurrentPlayerMovementState != PlayerMovementState.Casting
+            && CurrentPlayerMovementState != PlayerMovementState.Jumping
+            && CurrentPlayerMovementState != PlayerMovementState.Falling
+            && CurrentPlayerMovementState != PlayerMovementState.Dashing;
     }
 }
 
@@ -30,7 +64,8 @@ public enum PlayerMovementState
     Jumping = 4,
     Falling = 5,
     Strafing = 6,
-    Stunned = 7,
-    Aiming = 8,
+    MovingWhileCasting = 7,
+    ChargingMana = 8,
     Casting = 9,
+    Dashing = 10,
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DamageOverTimeSpellAttribute : BaseSpellAttribute
+public class DamageOverTimeSpellAttribute : DamagingSpellAttribute
 {
     public float dotDamage;
     public float dotDuration;

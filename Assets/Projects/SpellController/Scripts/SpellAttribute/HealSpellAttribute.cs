@@ -9,10 +9,10 @@ public class HealSpellAttribute : AuraSpellAttribute
     {
         PlayerStatus.ApplyHealBuff(healAmount);
 
-        return Instantiate(spellPrefab, CasterPosition, Quaternion.identity);
+        return InstantiateSpell();
     }
 
-    public override void CancelSpell(PlayerController playerController)
+    public override void CancelSpell()
     {
         PlayerStatus.RemoveHealBuff(healAmount);
     }

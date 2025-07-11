@@ -9,13 +9,11 @@ public class ManaBar : MonoBehaviour
     public void SetMana(float mana)
     {
 
-        print($"SetMana : {mana}");
         slider.value = mana;
     }
 
     public void SetMaxMana(float maxMana)
     {
-        print($"SetMaxMana : {maxMana}");
         slider.maxValue = maxMana;
         slider.value = maxMana;
     }

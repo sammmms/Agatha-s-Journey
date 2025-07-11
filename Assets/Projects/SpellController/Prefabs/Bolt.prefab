@@ -5066,6 +5066,7 @@ Transform:
   - {fileID: 8008383385203700221}
   - {fileID: 5814511459239202847}
   - {fileID: 8679914856186928053}
+  - {fileID: 7537243264842974479}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &2500755022870505109
@@ -5109,14 +5110,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 16
   spellPrefab: {fileID: 5182280641448971461}
+  onHitEffect: {fileID: 0}
   spellSound: {fileID: 8300000, guid: 836465cb1713f4b6aa322b22952baa1c, type: 3}
   spellIcon: {fileID: 21300000, guid: 21df9195ed43b004394e6d7913b03149, type: 3}
-  spellCost: 7
+  spellCost: 5
   spellCooldown: 4
-  spellSpeed: 10
-  spellDamage: 5
+  spellDamage: 9
+  spellSpeed: 20
   stunDuration: 1
   stunPerInstance: 0
+  isTracking: 0
 --- !u!114 &-9071345793536586922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5129,6 +5132,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 872df68f039c2694285e6b1df988ccd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyTag: Enemies
+  groundTag: Ground
+  destroyDelay: 0.1
+  destroyOnHit: 1
 --- !u!135 &2790183663720729042
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5144,7 +5151,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -19767,3 +19774,65 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1001 &3010993715795608048
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5480304476448205484}
+    m_Modifications:
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5818205763518135594, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+      propertyPath: m_Name
+      value: VFX_Trail_Electric
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+--- !u!4 &7537243264842974479 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4706428755030410495, guid: 395d5ec7f996d364f94e11cfb40736d3, type: 3}
+  m_PrefabInstance: {fileID: 3010993715795608048}
+  m_PrefabAsset: {fileID: 0}

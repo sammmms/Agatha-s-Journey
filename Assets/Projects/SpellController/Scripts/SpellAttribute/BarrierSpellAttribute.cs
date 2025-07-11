@@ -11,9 +11,8 @@ public class BarrierSpellAttribute : AuraSpellAttribute
         return InstantiateSpell();
     }
 
-    public override void CancelSpell(PlayerController playerController)
+    public override void CancelSpell()
     {
-        PlayerStatus playerStatus = playerController.GetComponent<PlayerStatus>();
-        playerStatus.RemoveDamageReduction(barrierDamageReduction);
+        PlayerStatus.RemoveDamageReduction(barrierDamageReduction);
     }
 }

@@ -77,7 +77,6 @@ public class HotbarScript : MonoBehaviour
                 iconElement.style.backgroundImage = spellAttribute.spellIcon.texture;
                 iconElement.tooltip = spellAttribute.spell.ToString();
 
-                Debug.Log($"Adding spell {spell} to hotbar slot {slot} with icon {spellAttribute.spellIcon.name}");
                 hotbarItems[slot].Add(iconElement);
             }
             else

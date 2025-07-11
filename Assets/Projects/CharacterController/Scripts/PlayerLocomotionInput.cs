@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,9 +22,18 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
             return _JumpPressed;
         }
     }
+    private bool _ManaCharged = false;
+    public bool ManaCharged
+    {
+        get
+        {
+            return _ManaCharged;
+        }
+    }
     public PlayerControls PlayerControls { get; private set; }
     public Vector2 MovementInput { get; private set; }
     public Vector2 LookInput { get; private set; }
+    public event Action OnDashTriggered;
 
     private void OnEnable()
     {
@@ -78,5 +88,25 @@ public class PlayerLocomotionInput : MonoBehaviour, PlayerControls.IPlayerLocomo
     public void OnZoom(InputAction.CallbackContext context)
     {
 
+    }
+
+    public void OnChargeMana(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _ManaCharged = true;
+        }
+        else
+        {
+            _ManaCharged = false;
+        }
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            OnDashTriggered?.Invoke();
+        }
     }
 }

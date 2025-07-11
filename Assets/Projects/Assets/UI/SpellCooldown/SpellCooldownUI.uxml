@@ -1,0 +1,6 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Projects/Assets/UI/SpellCooldown/SpellCooldownUSS.uss?fileID=7433441132597879392&amp;guid=36ae246b12852491c80db6429acf8cd4&amp;type=3#SpellCooldownUSS" />
+    <engine:VisualElement name="Background" style="flex-grow: 1; align-self: flex-start; align-items: flex-start; justify-content: flex-end; align-content: flex-start; width: 100%;">
+        <engine:VisualElement name="SpellCooldownContainer" style="flex-grow: 0; align-self: flex-start; align-items: flex-start; margin-top: 64px; margin-right: 64px; margin-bottom: 128px; margin-left: 24px; flex-direction: column-reverse; flex-wrap: wrap; justify-content: flex-start; align-content: flex-start;" />
+    </engine:VisualElement>
+</engine:UXML>

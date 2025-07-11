@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ public class SpellController : MonoBehaviour
     [SerializeField] private SpellDatabase _spellDatabase;
     private SpellLocomotionInput _spellLocomotionInput;
     private PlayerStatus _playerStatus;
+    private PlayerState _playerState;
     private PlayerAnimation _playerAnimation;
     public List<Spell> hotbarSpell = new List<Spell>()
     {
@@ -19,8 +21,9 @@ public class SpellController : MonoBehaviour
 
     public List<Spell> activeSpells = new List<Spell>();
     private Dictionary<Spell, GameObject> activeAura = new();
+
     private Dictionary<Spell, GameObject> shootableProjectiles = new();
-    private Dictionary<Spell, float> spellCooldown = new();
+    public Dictionary<Spell, float> spellCooldown = new();
     private static readonly Dictionary<Spell, Spell> twoSpellCombos = new()
     {
         {Spell.Barrier | Spell.Bolt, Spell.ShockingBarrier},
@@ -58,9 +61,30 @@ public class SpellController : MonoBehaviour
     private Coroutine _consumeManaCoroutine;
     private bool _isDrainingMana = false;
 
+    // Add this near your other private variables
+    private bool _isCooldownCoroutineRunning = false;
+
     private void Start()
     {
         _playerAnimation = GetComponent<PlayerAnimation>();
+    }
+
+    private void OnDisable()
+    {
+        if (_spellLocomotionInput != null)
+        {
+            _spellLocomotionInput.enabled = false;
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (_spellLocomotionInput != null)
+        {
+            _spellLocomotionInput.enabled = true;
+        }
+
+
     }
 
     private void Awake()
@@ -70,7 +94,7 @@ public class SpellController : MonoBehaviour
         _spellLocomotionInput.OnShootTriggered += HandlePlayerClick;
 
         _playerStatus = GetComponent<PlayerStatus>();
-
+        _playerState = GetComponent<PlayerState>();
 
     }
 
@@ -128,15 +152,26 @@ public class SpellController : MonoBehaviour
         }
 
         hotbarSpell.Remove(spell);
-        Debug.Log($"Removed {spell} from hotbar.");
+        activeSpells.Remove(spell);
+        HandleSpellCombination(); // Ensure the UI and active spells are updated
     }
 
     private void HandleHotbarInput(int index)
     {
+        if (index <= 0 || index > hotbarSpell.Count)
+        {
+            Debug.LogWarning($"Invalid spell index {index} in HandleHotbarInput.");
+            return;
+        }
         Spell spell = hotbarSpell[index - 1];
 
-        ToggleHotbarItem(spell);
+        if (spell == Spell.None)
+        {
+            Debug.LogWarning("No spell assigned to this hotbar slot.");
+            return;
+        }
 
+        ToggleHotbarItem(spell);
     }
 
     private void ToggleHotbarItem(Spell spell)
@@ -160,11 +195,11 @@ public class SpellController : MonoBehaviour
         List<Spell> spellToActivate = GetSpellCombination();
 
 
-        HashSet<Spell> activeSpells = new HashSet<Spell>(activeAura.Keys);
-        activeSpells.UnionWith(shootableProjectiles.Keys);
+        HashSet<Spell> currentlyActiveSpells = new(activeAura.Keys);
+        currentlyActiveSpells.UnionWith(shootableProjectiles.Keys);
 
-        HashSet<Spell> spellToRemove = new HashSet<Spell>();
-        foreach (Spell spell in activeSpells)
+        HashSet<Spell> spellToRemove = new();
+        foreach (Spell spell in currentlyActiveSpells)
         {
             if (!spellToActivate.Contains(spell))
             {
@@ -216,6 +251,8 @@ public class SpellController : MonoBehaviour
         {
             foreach (Spell combo in activeSpells)
             {
+                if (spell == combo) continue;
+
                 Spell twoSpellCombo = spell | combo;
 
                 if (twoSpellCombos.ContainsKey(twoSpellCombo) && !newActiveSpell.Contains(twoSpellCombos[twoSpellCombo]))
@@ -227,7 +264,7 @@ public class SpellController : MonoBehaviour
                 }
             }
 
-            if (combinedSpell.Count < 3)
+            if (combinedSpell.Count < 2) // Adjusted logic for clarity
             {
                 break;
             }
@@ -242,7 +279,6 @@ public class SpellController : MonoBehaviour
     }
     private void HandleActiveAura()
     {
-        HashSet<Spell> spellToRemove = new();
         foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
         {
             Vector3 position = transform.position;
@@ -255,28 +291,6 @@ public class SpellController : MonoBehaviour
             kvp.Value.transform.position = position;
         }
 
-        if (spellToRemove.Count == 0)
-        {
-            return;
-        }
-
-        List<Spell> spellToActivate = new();
-        foreach (Spell spell in spellToRemove)
-        {
-            HandleAuraDeactivation(GetGameObject(spell));
-
-            List<Spell> baseSpell = GetBaseSpellOf(spell);
-
-            foreach (Spell baseSpellItem in baseSpell)
-            {
-                spellToActivate.Add(baseSpellItem);
-            }
-        }
-
-        foreach (Spell spell in spellToActivate)
-        {
-            HandleSpellActivation(spell);
-        }
     }
 
     private void HandleSpellActivation(Spell spell)
@@ -303,37 +317,15 @@ public class SpellController : MonoBehaviour
     {
         if (activeAura.ContainsKey(spell))
         {
-            HandleAuraDeactivation(GetGameObject(spell));
+            // The spell enum is the key.
+            HandleAuraDeactivation(activeAura[spell]);
+            // Remove it from the dictionary here, after it's been handled.
+            activeAura.Remove(spell);
         }
         else if (shootableProjectiles.ContainsKey(spell))
         {
             shootableProjectiles.Remove(spell);
         }
-    }
-
-    private List<Spell> GetBaseSpellOf(Spell spell)
-    {
-        List<Spell> baseSpell = new();
-
-        foreach (KeyValuePair<Spell, Spell> kvp in twoSpellCombos)
-        {
-            if (kvp.Value == spell)
-            {
-                baseSpell.Add(kvp.Key);
-                break;
-            }
-        }
-
-        foreach (KeyValuePair<Spell, Spell> kvp in threeSpellCombos)
-        {
-            if (kvp.Value == spell)
-            {
-                baseSpell.Add(kvp.Key);
-                break;
-            }
-        }
-
-        return baseSpell;
     }
 
     private GameObject GetGameObject(Spell spell)
@@ -379,32 +371,25 @@ public class SpellController : MonoBehaviour
         StartManaDrain();
     }
 
-    private void HandleAuraDeactivation(GameObject spellPrefab)
+    private void HandleAuraDeactivation(GameObject spellInstance)
     {
-        BaseSpellAttribute[] spellAttribute = spellPrefab.GetComponents<BaseSpellAttribute>();
+        if (spellInstance == null) return;
 
-        BaseSpellAttribute[] auraAttributes = spellAttribute.Where(attr => attr is AuraSpellAttribute).ToArray();
+        // Get all AuraSpellAttributes from the instance.
+        AuraSpellAttribute[] auraAttributes = spellInstance.GetComponents<AuraSpellAttribute>();
 
-        BaseSpellAttribute identity = null;
-
-        foreach (AuraSpellAttribute spell in auraAttributes)
+        // Call CancelSpell on all of them to make sure buffs are removed.
+        foreach (AuraSpellAttribute attr in auraAttributes)
         {
-            spell.CancelSpell(GetComponent<PlayerController>());
-
-            if (spell.spell != Spell.None)
-            {
-                identity = spell;
-            }
-
+            attr.CancelSpell();
         }
 
-        Destroy(activeAura[identity.spell]);
-        activeAura.Remove(identity.spell);
+        // Destroy the instantiated GameObject.
+        Destroy(spellInstance);
     }
 
     private void StartManaDrain()
     {
-        print(_isDrainingMana);
         if (_isDrainingMana) return;
 
         _isDrainingMana = true;
@@ -414,30 +399,62 @@ public class SpellController : MonoBehaviour
     {
         while (activeAura.Count > 0)
         {
+            bool canContinue = true;
+            float totalManaCost = 0f;
             foreach (KeyValuePair<Spell, GameObject> kvp in activeAura)
             {
-                BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
-
-                if (spellAttribute == null)
+                if (!kvp.Value.TryGetComponent<BaseSpellAttribute>(out var spellAttribute))
                 {
                     continue;
                 }
-
-                if (_playerStatus.currentManaPoint < spellAttribute.spellCost)
-                {
-                    HandleSpellDeactivation(kvp.Key);
-                    yield break;
-                }
-
-                _playerStatus.TakeMana(spellAttribute.spellCost);
+                totalManaCost += spellAttribute.spellCost;
             }
+
+            if (_playerStatus.currentManaPoint < totalManaCost)
+            {
+                canContinue = false;
+            }
+            else
+            {
+                _playerStatus.TakeMana(totalManaCost);
+            }
+
+
+            if (!canContinue)
+            {
+                break;
+            }
+
 
             yield return new WaitForSeconds(1f);
         }
 
-        print("Stop Coroutine");
+        if (activeAura.Count > 0)
+        {
+            DeactivateAllAura();
+        }
+
         _isDrainingMana = false;
-        StopCoroutine(_consumeManaCoroutine);
+        _consumeManaCoroutine = null;
+    }
+
+    private void DeactivateAllAura()
+    {
+        // Get a list of all currently active auras to avoid modifying the dictionary while iterating.
+        List<Spell> aurasToDeactivate = new List<Spell>(activeAura.Keys);
+
+        foreach (Spell spell in aurasToDeactivate)
+        {
+            // This will call the new, cleaner HandleAuraDeactivation.
+            HandleSpellDeactivation(spell);
+        }
+
+        // Now that all auras are gone, clear the base spells that the player selected.
+        // This forces a "reset" state, which is appropriate for running out of mana.
+        activeSpells.Clear();
+
+        // We need to trigger a combination check to update the UI and projectile lists (which should now be empty).
+        HandleSpellCombination();
     }
 
 
@@ -445,46 +462,56 @@ public class SpellController : MonoBehaviour
     {
         List<Spell> spellToActivate = GetLaunchableSpells();
 
-        if (spellToActivate.Count > 0)
+        if (spellToActivate.Count > 0 && _playerState.CanCastSpell())
         {
+            _playerState.SetPlayerMovementState(PlayerMovementState.Casting);
             _playerAnimation.CastSpellAnimation();
         }
     }
 
     public void LaunchAnimationTriggers()
     {
-        Debug.Log("Launch Animation Triggers");
-        Debug.Log("Shootable Projectiles Count: " + shootableProjectiles.Count);
-        foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
+        // Create a copy of the dictionary to avoid modification issues during iteration
+        var projectilesToLaunch = new Dictionary<Spell, GameObject>(shootableProjectiles);
+
+        foreach (KeyValuePair<Spell, GameObject> kvp in projectilesToLaunch)
         {
             HandleLaunchSpell(kvp.Value);
         }
     }
 
+    private bool IsSpellLaunchable(GameObject spellPrefab)
+    {
+        if (spellPrefab == null) return false;
+
+        if (!spellPrefab.TryGetComponent<BaseSpellAttribute>(out var spellAttribute))
+        {
+            return false;
+        }
+
+        Spell spell = spellAttribute.spell;
+
+        // Spell is launchable if it's not on cooldown and the player has enough mana
+        if (!spellCooldown.ContainsKey(spell))
+        {
+            return spellAttribute.CanCastSpell(_playerStatus.currentManaPoint);
+        }
+
+        return false; // It's on cooldown
+    }
+
     private List<Spell> GetLaunchableSpells()
     {
-        List<Spell> launchableSpells = new List<Spell>();
+        List<Spell> launchableSpells = new();
 
         foreach (KeyValuePair<Spell, GameObject> kvp in shootableProjectiles)
         {
-            BaseSpellAttribute spellAttribute = kvp.Value.GetComponent<BaseSpellAttribute>();
 
-            if (spellAttribute == null)
+            if (IsSpellLaunchable(kvp.Value))
             {
-                continue;
+                launchableSpells.Add(kvp.Key);
             }
 
-            if (spellCooldown.ContainsKey(spellAttribute.spell))
-            {
-                bool canCast = spellAttribute.CanCastSpell(spellCooldown[spellAttribute.spell], _playerStatus.currentManaPoint);
-
-                if (!canCast)
-                {
-                    continue;
-                }
-            }
-
-            launchableSpells.Add(spellAttribute.spell);
         }
 
         return launchableSpells;
@@ -493,31 +520,60 @@ public class SpellController : MonoBehaviour
     private void HandleLaunchSpell(GameObject spellPrefab)
     {
 
-        if (!spellPrefab.TryGetComponent<BaseSpellAttribute>(out var spellAttribute))
+        if (spellPrefab == null) return;
+        if (spellPrefab.TryGetComponent<BaseSpellAttribute>(out var spellAttribute))
         {
-            return;
-        }
+            // Double-check if the spell is launchable right before casting
+            if (!IsSpellLaunchable(spellPrefab)) return;
 
-        Spell spell = spellAttribute.spell;
+            HandleCastSpell(spellAttribute);
+            _playerStatus.TakeMana(spellAttribute.spellCost);
+            spellCooldown[spellAttribute.spell] = spellAttribute.spellCooldown;
 
-        if (spellCooldown.ContainsKey(spell))
-        {
-            bool canCast = spellAttribute.CanCastSpell(spellCooldown[spell], _playerStatus.currentManaPoint);
-
-            if (!canCast)
+            // Start the cooldown handler if it's not already active
+            if (!_isCooldownCoroutineRunning)
             {
-                return;
+                StartCoroutine(HandleSpellCooldown());
             }
-        }
 
-        HandleCastSpell(spellAttribute);
-        _playerStatus.TakeMana(spellAttribute.spellCost);
-        spellCooldown[spell] = spellAttribute.spellCooldown;
+        }
+        _playerState.SetPlayerMovementState(PlayerMovementState.Idling);
+
     }
 
     private GameObject HandleCastSpell(BaseSpellAttribute spellAttribute)
     {
         return spellAttribute.CastSpell(gameObject);
+    }
+
+    private IEnumerator HandleSpellCooldown()
+    {
+        _isCooldownCoroutineRunning = true; // Set the flag to true
+
+        while (spellCooldown.Count > 0)
+        {
+            List<Spell> spellsToRemove = new List<Spell>();
+
+            // Use a copy of the keys to allow modification during iteration
+            foreach (Spell spellKey in new List<Spell>(spellCooldown.Keys))
+            {
+                spellCooldown[spellKey] -= Time.deltaTime;
+
+                if (spellCooldown[spellKey] <= 0f)
+                {
+                    spellsToRemove.Add(spellKey);
+                }
+            }
+
+            foreach (Spell spell in spellsToRemove)
+            {
+                spellCooldown.Remove(spell);
+            }
+
+            yield return null;
+        }
+
+        _isCooldownCoroutineRunning = false; // Reset the flag when done
     }
     #endregion
 }

@@ -37,12 +37,6 @@ public class SpellLocomotionInput : MonoBehaviour, SpellControls.IItemInputsActi
             {
                 OnShootTriggered?.Invoke();
             }
-
-            // Dashing
-            else if (context.control.name == "rightButton")
-            {
-                OnShootTriggered?.Invoke();
-            }
         }
     }
 

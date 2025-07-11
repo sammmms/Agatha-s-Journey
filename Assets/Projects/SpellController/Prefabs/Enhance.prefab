@@ -4851,11 +4851,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spell: 4
   spellPrefab: {fileID: 950369842493697681}
+  onHitEffect: {fileID: 0}
   spellSound: {fileID: 8300000, guid: 6802f5bf5e4a74d438f251a0017cbc9c, type: 3}
   spellIcon: {fileID: 21300000, guid: 0f182fb2863faa7449e020de33b77e68, type: 3}
-  spellCost: 5
+  spellCost: 4
   spellCooldown: 0
-  damageBuffAmount: 5
+  damageBuffAmount: 8
 --- !u!1 &3115090875162215688
 GameObject:
   m_ObjectHideFlags: 0

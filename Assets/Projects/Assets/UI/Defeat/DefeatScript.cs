@@ -48,6 +48,7 @@ public class DefeatScript : MonoBehaviour
 
         UnityEngine.Cursor.visible = true;
         UnityEngine.Cursor.lockState = CursorLockMode.None;
+
         // Disable other UI documents
         foreach (var obj in objectToDisable)
         {
@@ -57,6 +58,15 @@ public class DefeatScript : MonoBehaviour
             }
         }
 
+        // Disable camera movement script(s)
+        var camera = Camera.main;
+        if (camera != null)
+        {
+            if (camera.TryGetComponent<MonoBehaviour>(out var cameraMovement))
+            {
+                cameraMovement.enabled = false;
+            }
+        }
     }
 
     void HideUI()

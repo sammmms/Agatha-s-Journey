@@ -29,8 +29,9 @@ public class EnemyTargeter : MonoBehaviour
     {
         Vector3 dirToEnemy = (enemy.position - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, enemy.position);
+        bool isObstacle = IsObstacleBetween(transform.position, dirToEnemy, distance);
 
-        if (!IsObstacleBetween(transform.position, dirToEnemy, distance))
+        if (!isObstacle)
         {
             return true;
         }
@@ -42,7 +43,6 @@ public class EnemyTargeter : MonoBehaviour
     {
         RaycastHit[] hits = Physics.RaycastAll(origin, direction, distance);
 
-        print("Raycast hits: " + hits.Length);
 
         // Visualize the ray on trigger
         Debug.DrawRay(origin, direction * distance, Color.red, 1f);

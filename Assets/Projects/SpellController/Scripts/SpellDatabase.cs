@@ -96,4 +96,17 @@ public class SpellDatabase : ScriptableObject
         }
         return basicSpellPrefabs;
     }
+
+    public List<Spell> GetBasicSpellsOf(Spell spell)
+    {
+        List<Spell> basicSpells = new List<Spell>();
+        foreach (var basicSpell in _basicSpells)
+        {
+            if ((spell & basicSpell) == basicSpell)
+            {
+                basicSpells.Add(basicSpell);
+            }
+        }
+        return basicSpells;
+    }
 }

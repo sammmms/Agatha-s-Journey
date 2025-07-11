@@ -2,36 +2,83 @@ using UnityEngine;
 
 public class SpellCollisionHandler : MonoBehaviour
 {
-    ProjectileSpellAttribute _spellAttribute;
+    DamagingSpellAttribute _spellAttribute;
+    public string enemyTag = "Enemies";
+    public string groundTag = "Ground";
+
+    [Header("Spell Collision Settings")]
+
+    [SerializeField] private float destroyDelay = 0.1f; // Delay before destroying the spell 
+    [SerializeField] private bool destroyOnHit = true; // Whether to destroy the spell on hit
 
     private void Awake()
     {
-        _spellAttribute = GetComponent<ProjectileSpellAttribute>();
+        _spellAttribute = GetComponent<DamagingSpellAttribute>();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Enemies"))
+        if (other.CompareTag(enemyTag))
         {
-            HandleEnemyCollision(collision);
+            HandleEnemyTrigger(other);
         }
-        else if (collision.gameObject.CompareTag("Ground"))
+        else if (other.CompareTag(groundTag))
         {
             Destroy(gameObject);
         }
     }
 
-    private void HandleEnemyCollision(Collision collision)
+    private void HandleEnemyTrigger(Collider other)
     {
-        Debug.Log("Hit enemy: " + collision.gameObject.name);
-
-        EnemyController enemy = collision.gameObject.GetComponent<EnemyController>();
-        if (enemy != null)
+        if (other.TryGetComponent<EnemyController>(out var enemy))
         {
-            enemy.TakeDamage(_spellAttribute.spellDamage); // Replace with actual damage value
+            try
+            {
+
+                enemy.TakeDamage(_spellAttribute.spellDamage);
+
+                if (TryGetComponent<ProjectileSpellAttribute>(out var projectileSpell))
+                {
+                    if (projectileSpell.stunDuration > 0)
+                    {
+                        enemy.Stun(projectileSpell.stunDuration);
+                    }
+                }
+
+                if (_spellAttribute.onHitEffect != null)
+                {
+                    // Instantiate the on-hit effect at the enemy's position
+                    ParticleSystem effectInstance = Instantiate(_spellAttribute.onHitEffect, enemy.transform.position, Quaternion.identity);
+                    effectInstance.Play();
+                    Destroy(effectInstance.gameObject, effectInstance.main.duration);
+                }
+
+
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error dealing damage to enemy: {ex.Message}");
+            }
+        }
+        else if (other.TryGetComponent<PlayerStatus>(out var player))
+        {
+            try
+            {
+                Debug.Log($"Spell hit player: {player.name}");
+                player.TakeDamage(_spellAttribute.spellDamage);
+
+
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error dealing damage to player: {ex.Message}");
+            }
         }
 
-        // Destroy the spell object after hitting the enemy
-        Destroy(gameObject);
+        if (destroyOnHit)
+        {
+            Destroy(gameObject, destroyDelay);
+        }
+        // Destroy the spell object after a short delay to allow for damage processing
     }
 }

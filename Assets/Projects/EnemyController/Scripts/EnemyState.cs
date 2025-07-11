@@ -14,23 +14,29 @@ public class EnemyState : MonoBehaviour
     public bool InGroundedState()
     {
         return CurrentEnemyMovementState == EnemyMovementState.Idling
-            || CurrentEnemyMovementState == EnemyMovementState.Walking
-            || CurrentEnemyMovementState == EnemyMovementState.Running
-            || CurrentEnemyMovementState == EnemyMovementState.Sprinting
-            || CurrentEnemyMovementState == EnemyMovementState.Strafing;
+            || CurrentEnemyMovementState == EnemyMovementState.Chasing;
+
     }
+
+    public bool InAttackingState()
+    {
+        return CurrentEnemyMovementState == EnemyMovementState.AttackingClose
+            || CurrentEnemyMovementState == EnemyMovementState.AttackingRanged;
+    }
+
+    public bool InDashingState()
+    {
+        return CurrentEnemyMovementState == EnemyMovementState.Dashing;
+    }
+
 }
 
 public enum EnemyMovementState
 {
     Idling = 0,
-    Walking = 1,
-    Running = 2,
-    Sprinting = 3,
-    Jumping = 4,
-    Falling = 5,
-    Strafing = 6,
-    Stunned = 7,
-    Aiming = 8,
-    Casting = 9,
+    Chasing = 1,
+    Dashing = 2,
+    AttackingClose = 3,
+    AttackingRanged = 4,
+    Stunned = 5,
 }

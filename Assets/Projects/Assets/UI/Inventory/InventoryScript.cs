@@ -6,6 +6,8 @@ public class InventoryScript : MonoBehaviour
     [SerializeField] public UIDocument inventoryUIDocument;
     [SerializeField] private SpellDatabase spellDatabase;
     [SerializeField] private SpellController spellController;
+    [SerializeField] private SpellLocomotionInput spellLocomotionInput;
+
 
     private VisualElement equipmentCard;
 
@@ -25,6 +27,7 @@ public class InventoryScript : MonoBehaviour
             return;
         }
 
+
     }
 
     void Start()
@@ -38,6 +41,14 @@ public class InventoryScript : MonoBehaviour
         {
             Debug.LogError("Inventory UIDocument is not assigned in Start.");
         }
+
+        if (spellLocomotionInput != null)
+        {
+            spellLocomotionInput.enabled = false; // Disable spell locomotion input initially
+
+            spellLocomotionInput.OnSpellSelected += HandleSpellSelected;
+        }
+
     }
 
     void OnEnable()
@@ -53,9 +64,34 @@ public class InventoryScript : MonoBehaviour
 
         root.style.display = DisplayStyle.None; // Ensure the UI is hidden initially
 
-        UpdateSpellIcons();
+        UpdateSelectableSpellIcons();
 
         InitiateHotbarItems(); // Initialize hotbar items
+    }
+
+    void HandleSpellSelected(int index)
+    {
+        if (spellController != null)
+        {
+            if (index <= 0 || index > spellController.hotbarSpell.Count)
+            {
+                Debug.LogWarning($"Invalid spell index {index} in HandleSpellSelected.");
+                return;
+            }
+
+            Spell selectedSpell = spellController.hotbarSpell[index - 1];
+            if (selectedSpell == Spell.None)
+            {
+                Debug.LogWarning("No spell selected in HandleSpellSelected.");
+                return;
+            }
+
+            HandleHotbarSpellClicked(selectedSpell);
+        }
+        else
+        {
+            Debug.LogError("SpellController is not assigned in HandleSpellSelected.");
+        }
     }
 
     void InitiateHotbarItems()
@@ -67,13 +103,19 @@ public class InventoryScript : MonoBehaviour
         }
 
 
-        HandleActiveHotbarSpell(); // Update hotbar spells on start
+        UpdateActiveHotbarSpell(); // Update hotbar spells on start
     }
 
     void Update()
     {
         HandleEquipmentButtonClicked();
         HandleEscapeKeyPressed();
+    }
+
+    void ReflectChanges()
+    {
+        UpdateSelectableSpellIcons(); // Update spell icons in the UI
+        UpdateActiveHotbarSpell(); // Update hotbar spells in the UI
     }
 
     void HandleEquipmentButtonClicked()
@@ -105,10 +147,13 @@ public class InventoryScript : MonoBehaviour
         {
             Time.timeScale = 0f;
             inventoryUIDocument.rootVisualElement.style.display = DisplayStyle.Flex;
-            UpdateSpellIcons();
+            UpdateSelectableSpellIcons();
             UnityEngine.Cursor.visible = true;
             UnityEngine.Cursor.lockState = CursorLockMode.None;
-            HandleActiveHotbarSpell(); // Update hotbar spells when opening the UI
+            spellController.enabled = false; // Disable spell controller when UI is open
+            spellLocomotionInput.enabled = true; // Disable spell locomotion input when UI is open
+
+            ReflectChanges(); // Reflect changes in the UI
         }
         else
         {
@@ -124,6 +169,8 @@ public class InventoryScript : MonoBehaviour
             inventoryUIDocument.rootVisualElement.style.display = DisplayStyle.None;
             UnityEngine.Cursor.visible = false;
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            spellController.enabled = true; // Re-enable spell controller when UI is closed
+            spellLocomotionInput.enabled = false; // Re-enable spell locomotion input when UI is closed
         }
         else
         {
@@ -131,7 +178,7 @@ public class InventoryScript : MonoBehaviour
         }
     }
 
-    void UpdateSpellIcons()
+    void UpdateSelectableSpellIcons()
     {
         if (equipmentCard == null) return;
         equipmentCard.Clear();
@@ -153,33 +200,10 @@ public class InventoryScript : MonoBehaviour
             }
             equipmentCard.Add(spellElement);
         }
+
     }
 
-    bool IsSpellInHotbar(Spell spell)
-    {
-        return spellController.hotbarSpell.Contains(spell);
-    }
-
-    void HandleSpellClick(Spell spell)
-    {
-        if (spell == Spell.None) return;
-
-        // Check if the spell is already in the hotbar
-        if (IsSpellInHotbar(spell))
-        {
-            Debug.Log($"Spell {spell} is already in the hotbar.");
-            return;
-        }
-
-        // Add the spell to the hotbar
-        spellController.AddSpellToHotbar(spell);
-        UpdateSpellIcons();
-
-        // Update the hotbar UI to reflect the new spell
-        HandleActiveHotbarSpell();
-    }
-
-    void HandleActiveHotbarSpell()
+    void UpdateActiveHotbarSpell()
     {
         var root = inventoryUIDocument.rootVisualElement;
         for (int i = 0; i < hotbarItems.Length; i++)
@@ -210,14 +234,36 @@ public class InventoryScript : MonoBehaviour
         }
     }
 
+    bool IsSpellInHotbar(Spell spell)
+    {
+        return spellController.hotbarSpell.Contains(spell);
+    }
+
+    void HandleSpellClick(Spell spell)
+    {
+        if (spell == Spell.None) return;
+
+        // Check if the spell is already in the hotbar
+        if (IsSpellInHotbar(spell))
+        {
+            Debug.Log($"Spell {spell} is already in the hotbar.");
+            return;
+        }
+
+        // Add the spell to the hotbar
+        spellController.AddSpellToHotbar(spell);
+
+        ReflectChanges(); // Reflect changes in the UI
+    }
+
+
+
     void HandleHotbarSpellClicked(Spell spell)
     {
         if (spell == Spell.None) return;
 
         spellController.RemoveSpellFromHotbar(spell);
-        UpdateSpellIcons();
 
-        // Update the hotbar UI to reflect the removed spell
-        HandleActiveHotbarSpell();
+        ReflectChanges(); // Reflect changes in the UI
     }
 }
